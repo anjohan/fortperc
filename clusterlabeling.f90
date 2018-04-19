@@ -65,9 +65,9 @@ module clusterlabeling
             if(j>1 .and. matrix(i,j-1) .and. labeled_matrix(i,j-1)==0) then
                 call growcluster(matrix, labeled_matrix, i, j-1, label)
             endif
-       end subroutine
+        end subroutine
 
-       function find_spanning_cluster(labeled_matrix, number_of_labels) result(spanning_label)
+        function find_spanning_cluster(labeled_matrix, number_of_labels) result(spanning_label)
            integer :: spanning_label
            integer, dimension(:,:), allocatable, intent(in) :: labeled_matrix
            integer, intent(in) :: number_of_labels
@@ -80,9 +80,9 @@ module clusterlabeling
            if (spanning_label == -1) then
                spanning_label = find_intersection(labeled_matrix(1,:), labeled_matrix(L,:), number_of_labels)
            end if
-       end function
+        end function
 
-       function find_intersection(array1, array2, number_of_labels) result(intersect_label)
+        function find_intersection(array1, array2, number_of_labels) result(intersect_label)
            integer, dimension(:), intent(in) :: array1, array2
            integer :: intersect_label
            integer, intent(in) :: number_of_labels
@@ -111,4 +111,82 @@ module clusterlabeling
 
         end function
 
+        function spanning_density_one_sample(p, L) result(spanning_density)
+            real :: spanning_density
+            real, intent(in) :: p
+            integer, intent(in) :: L
+
+            logical, dimension(:,:), allocatable :: binary_matrix
+            integer, dimension(:,:), allocatable :: labeled_matrix
+
+            integer :: number_of_labels, spanning_label
+
+            binary_matrix = create_binary_matrix(p,L)
+            call label(binary_matrix, labeled_matrix, number_of_labels)
+
+            spanning_label = find_spanning_cluster(labeled_matrix, number_of_labels)
+
+            if (spanning_label == -1) then
+                spanning_density = 0
+                return
+            end if
+
+            spanning_density = count(labeled_matrix == spanning_label)/(L**2)
+        end function
+
+        function spanning_density(p, L, number_of_samples)
+            real :: spanning_density
+            real, intent(in) :: p
+            integer, intent(in) :: L, number_of_samples
+
+            integer :: i
+            real, dimension(:), allocatable :: results
+
+            allocate(results(number_of_samples))
+
+            !$omp parallel do
+            do i=1,number_of_samples
+                results(i) = spanning_density_one_sample(p, L)
+            end do
+            !$omp end parallel do
+
+            spanning_density = sum(results)/number_of_samples
+        end function
+
+        function has_spanning_cluster_one_sample(p, L) result(has_spanning)
+            logical :: has_spanning
+            real, intent(in) :: p
+            integer, intent(in) :: L
+
+            logical, dimension(:,:), allocatable :: binary_matrix
+            integer, dimension(:,:), allocatable :: labeled_matrix
+
+            integer :: number_of_labels, spanning_label
+
+            binary_matrix = create_binary_matrix(p,L)
+            call label(binary_matrix, labeled_matrix, number_of_labels)
+
+            spanning_label = find_spanning_cluster(labeled_matrix, number_of_labels)
+
+            has_spanning = spanning_label /= -1
+        end function
+
+        function spanning_probability(p, L, number_of_samples)
+            real :: spanning_probability
+            real, intent(in) :: p
+            integer, intent(in) :: L, number_of_samples
+
+            integer :: i
+            logical, dimension(:), allocatable :: results
+
+            allocate(results(number_of_samples))
+
+            !$omp parallel do
+            do i=1,number_of_samples
+                results(i) = has_spanning_cluster_one_sample(p, L)
+            end do
+            !$omp end parallel do
+
+            spanning_probability = count(results)/number_of_samples
+        end function
 end module clusterlabeling
