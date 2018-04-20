@@ -93,9 +93,9 @@ module clusterlabelling
 
             L = size(array1)
 
-            !/intersectsnippetstart/!
             allocate(label_found(0:number_of_labels))
-            label_found = .false.
+            !/intersectsnippetstart/!
+            label_found(0:number_of_labels) = .false.
 
             do i=1,L
                 label_found(array1(i)) = .true.
@@ -105,7 +105,7 @@ module clusterlabelling
                 if(array2(i) /= 0 .and. label_found(array2(i))) then
                     intersect_label = array2(i)
                     return
-                 end if
+                end if
             end do
             !/intersectsnippetend/!
 
