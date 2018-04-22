@@ -13,8 +13,8 @@ module utilities
         end function
 
         function linspace(a,b,N)
-            real(kind=dp), intent(in) :: a,b
             integer, intent(in) :: N
+            real(kind=dp), intent(in) :: a,b
             real(kind=dp), dimension(:), allocatable :: linspace
             real(kind=dp) :: dx
             integer :: i

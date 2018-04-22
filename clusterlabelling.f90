@@ -1,12 +1,13 @@
 module clusterlabelling
+    use utilities
     implicit none
     contains
         function create_binary_matrix(p, L) result(binary_matrix)
             logical, dimension(:,:), allocatable :: binary_matrix
-            real, intent(in) :: p
+            real(kind=dp), intent(in) :: p
             integer, intent(in) :: L
 
-            real, dimension(:,:), allocatable :: p_matrix
+            real(kind=dp), dimension(:,:), allocatable :: p_matrix
             allocate(p_matrix(L,L))
 
             call random_seed()
@@ -54,17 +55,25 @@ module clusterlabelling
 
             labelled_matrix(i,j) = label
 
-            if(i<L .and. matrix(i+1,j) .and. labelled_matrix(i+1,j)==0) then
-                call growcluster(matrix, labelled_matrix, i+1, j, label)
+            if(i<L) then
+                if(matrix(i+1,j) .and. labelled_matrix(i+1,j)==0) then
+                    call growcluster(matrix, labelled_matrix, i+1, j, label)
+                endif
             endif
-            if(j<L .and. matrix(i,j+1) .and. labelled_matrix(i,j+1)==0) then
-                call growcluster(matrix, labelled_matrix, i, j+1, label)
+            if(j<L) then
+                if(matrix(i,j+1) .and. labelled_matrix(i,j+1)==0) then
+                    call growcluster(matrix, labelled_matrix, i, j+1, label)
+                endif
             endif
-            if(i>1 .and. matrix(i-1,j) .and. labelled_matrix(i-1,j)==0) then
-                call growcluster(matrix, labelled_matrix, i-1, j, label)
+            if(i>1) then
+                if(matrix(i-1,j) .and. labelled_matrix(i-1,j)==0) then
+                    call growcluster(matrix, labelled_matrix, i-1, j, label)
+                endif
             endif
-            if(j>1 .and. matrix(i,j-1) .and. labelled_matrix(i,j-1)==0) then
-                call growcluster(matrix, labelled_matrix, i, j-1, label)
+            if(j>1) then
+                if(matrix(i,j-1) .and. labelled_matrix(i,j-1)==0) then
+                    call growcluster(matrix, labelled_matrix, i, j-1, label)
+                endif
             endif
         end subroutine
         !/growclustersubroutineend/!
@@ -114,8 +123,8 @@ module clusterlabelling
         end function
 
         function spanning_density_one_sample(p, L) result(spanning_density)
-            real :: spanning_density
-            real, intent(in) :: p
+            real(kind=dp) :: spanning_density
+            real(kind=dp), intent(in) :: p
             integer, intent(in) :: L
 
             logical, dimension(:,:), allocatable :: binary_matrix
@@ -133,16 +142,16 @@ module clusterlabelling
                 return
             end if
 
-            spanning_density = count(labelled_matrix == spanning_label)/(L**2)
+            spanning_density = count(labelled_matrix == spanning_label)/real(L**2,kind=dp)
         end function
 
         function spanning_density(p, L, number_of_samples)
-            real :: spanning_density
-            real, intent(in) :: p
+            real(kind=dp) :: spanning_density
+            real(kind=dp), intent(in) :: p
             integer, intent(in) :: L, number_of_samples
 
             integer :: i
-            real, dimension(:), allocatable :: results
+            real(kind=dp), dimension(:), allocatable :: results
 
             allocate(results(number_of_samples))
 
@@ -157,7 +166,7 @@ module clusterlabelling
 
         function has_spanning_cluster_one_sample(p, L) result(has_spanning)
             logical :: has_spanning
-            real, intent(in) :: p
+            real(kind=dp), intent(in) :: p
             integer, intent(in) :: L
 
             logical, dimension(:,:), allocatable :: binary_matrix
@@ -174,8 +183,8 @@ module clusterlabelling
         end function
 
         function spanning_probability(p, L, number_of_samples)
-            real :: spanning_probability
-            real, intent(in) :: p
+            real(kind=dp) :: spanning_probability
+            real(kind=dp), intent(in) :: p
             integer, intent(in) :: L, number_of_samples
 
             integer :: i
@@ -189,6 +198,6 @@ module clusterlabelling
             end do
             !$omp end parallel do
 
-            spanning_probability = count(results)/number_of_samples
+            spanning_probability = count(results)/real(number_of_samples,kind=dp)
         end function
 end module clusterlabelling
