@@ -1,6 +1,7 @@
 module clusterlabelling
     use utilities
     implicit none
+    real(kind=dp), parameter :: pc = 0.592746
     contains
         function create_binary_matrix(p, L) result(binary_matrix)
             logical, dimension(:,:), allocatable :: binary_matrix
