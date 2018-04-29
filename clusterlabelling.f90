@@ -18,6 +18,98 @@ module clusterlabelling
 
         end function
 
+        subroutine label_wrongly(matrix, labelled_matrix, number_of_labels)
+            logical, dimension(:,:), allocatable, intent(in) :: matrix
+            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
+            integer, intent(inout) :: number_of_labels
+            integer, dimension(:), allocatable :: label_map, reduced_label_map, tmp
+            integer :: L, i, j, highest_label
+            integer :: up, left
+
+
+            L = size(matrix,1)
+            number_of_labels = 0
+
+            if(.not. allocated(labelled_matrix)) then
+                allocate(labelled_matrix(L,L))
+            end if
+
+            labelled_matrix = 0
+            highest_label = 0
+
+            label_map = [ (0, i=1,L*L) ]
+            ! write(*,*) "Label map:", label_map
+
+            do j=1,L
+                do i=1,L
+                    if(matrix(i,j)) then
+                        if(i==1) then
+                            up = 0
+                        else
+                            up = labelled_matrix(i-1, j)
+                        endif
+                        if(j==1) then
+                            left = 0
+                        else
+                            left = labelled_matrix(i, j-1)
+                        endif
+
+                        if(left==0) then
+                            if(up==0) then
+                                highest_label = highest_label + 1
+                                labelled_matrix(i,j) = highest_label
+                                label_map(highest_label) = highest_label
+                            else
+                                labelled_matrix(i,j) = up
+                            endif
+                        else
+                            if(up==0 .or. left==up) then
+                                labelled_matrix(i,j) = left
+                            else
+                                labelled_matrix(i,j) = min(left,up)
+                                label_map(max(left,up)) = min(left,up)
+                            endif
+                        endif
+                    endif
+                enddo
+            enddo
+
+            ! write(*,*) "Labels before reduction:"
+            ! do i = 1, highest_label
+            !     write(*,*) i, label_map(i)
+            ! enddo
+
+            do i = highest_label, 1, -1
+                j = i
+                do while(label_map(j) /= j)
+                    j = label_map(j)
+                end do
+                label_map(i) = j
+            enddo
+
+            ! write(*,*) "Labels after reduction:"
+            ! do i = 1, highest_label
+            !     write(*,*) i, label_map(i)
+            ! enddo
+
+            allocate(reduced_label_map(highest_label))
+            reduced_label_map = 0
+            number_of_labels = 0
+            do i = 1, highest_label
+                if(label_map(i) == i) then
+                    number_of_labels = number_of_labels + 1
+                    reduced_label_map(i) = number_of_labels
+                endif
+            enddo
+
+            ! write(*,*) "Numer of  labels:", number_of_labels
+
+            ! write(*,*) "Overwriting labels."
+
+            do concurrent(j=1:L, i=1:L, labelled_matrix(i,j)/=0)
+                labelled_matrix(i,j) = reduced_label_map(label_map(labelled_matrix(i,j)))
+            enddo
+        end subroutine
         !/labelsubroutinestart/!
         subroutine label(matrix, labelled_matrix, number_of_labels)
             logical, dimension(:,:), allocatable, intent(in) :: matrix

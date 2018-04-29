@@ -24,7 +24,7 @@ module utilities
         end function
         subroutine linfit(x, y, slope, const)
             real(kind=dp), dimension(:), intent(in) :: x, y
-            real(kind=dp), intent(out) :: slope, const
+            real(kind=dp), intent(in out) :: slope, const
             real(kind=dp), dimension(:,:), allocatable :: A
             real(kind=dp), dimension(:), allocatable :: b, work
             integer :: lda, ldb, lwork, info, m
