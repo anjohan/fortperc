@@ -36,43 +36,26 @@ module clusterlabelling
 
             labelled_matrix = 0
             highest_label = 0
+        function sizes(labelled_matrix, number_of_labels)
+            integer, dimension(:), allocatable :: sizes
+            integer, dimension(:,:), intent(in) :: labelled_matrix
+            integer, intent(in) :: number_of_labels
+            integer :: L,i,j,label
 
-            label_map = [ (0, i=1,L*L) ]
-            ! write(*,*) "Label map:", label_map
+            L = size(labelled_matrix,1)
+            allocate(sizes(number_of_labels))
+            sizes(:) = 0
 
             do j=1,L
                 do i=1,L
-                    if(matrix(i,j)) then
-                        if(i==1) then
-                            up = 0
-                        else
-                            up = labelled_matrix(i-1, j)
-                        endif
-                        if(j==1) then
-                            left = 0
-                        else
-                            left = labelled_matrix(i, j-1)
-                        endif
-
-                        if(left==0) then
-                            if(up==0) then
-                                highest_label = highest_label + 1
-                                labelled_matrix(i,j) = highest_label
-                                label_map(highest_label) = highest_label
-                            else
-                                labelled_matrix(i,j) = up
-                            endif
-                        else
-                            if(up==0 .or. left==up) then
-                                labelled_matrix(i,j) = left
-                            else
-                                labelled_matrix(i,j) = min(left,up)
-                                label_map(max(left,up)) = min(left,up)
-                            endif
-                        endif
+                    associate (label => labelled_matrix(i,j))
+                        if(label /= 0) then
+                            sizes(label) = sizes(label) + 1
                     endif
+                    end associate
                 enddo
             enddo
+        end function
 
             ! write(*,*) "Labels before reduction:"
             ! do i = 1, highest_label
