@@ -15,7 +15,6 @@ module clusterlabelling
             call random_number(p_matrix)
 
             binary_matrix = p_matrix < p
-
         end function
 
         function sizes(labelled_matrix, number_of_labels)
