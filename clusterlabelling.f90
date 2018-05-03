@@ -17,28 +17,6 @@ module clusterlabelling
             binary_matrix = p_matrix < p
         end function
 
-        function sizes(labelled_matrix, number_of_labels)
-            integer, dimension(:), allocatable :: sizes
-            integer, dimension(:,:), intent(in) :: labelled_matrix
-            integer, intent(in) :: number_of_labels
-            integer :: L,i,j
-
-            L = size(labelled_matrix,1)
-            allocate(sizes(number_of_labels))
-            sizes(:) = 0
-
-            do j=1,L
-                do i=1,L
-                    associate (label => labelled_matrix(i,j))
-                        if(label /= 0) then
-                            sizes(label) = sizes(label) + 1
-                        endif
-                    end associate
-                enddo
-            enddo
-        end function
-
-
         !/labelsubroutinestart/!
         subroutine label(matrix, labelled_matrix, number_of_labels)
             logical, dimension(:,:), allocatable, intent(in) :: matrix
@@ -99,6 +77,27 @@ module clusterlabelling
             endif
         end subroutine
         !/growclustersubroutineend/!
+
+        function sizes(labelled_matrix, number_of_labels)
+            integer, dimension(:), allocatable :: sizes
+            integer, dimension(:,:), intent(in) :: labelled_matrix
+            integer, intent(in) :: number_of_labels
+            integer :: L,i,j
+
+            L = size(labelled_matrix,1)
+            allocate(sizes(number_of_labels))
+            sizes(:) = 0
+
+            do j=1,L
+                do i=1,L
+                    associate (label => labelled_matrix(i,j))
+                        if(label /= 0) then
+                            sizes(label) = sizes(label) + 1
+                        endif
+                    end associate
+                enddo
+            enddo
+        end function
 
         function find_spanning_cluster(labelled_matrix, number_of_labels) result(spanning_label)
             integer :: spanning_label
