@@ -21,7 +21,7 @@ module clusterlabelling
             integer, dimension(:), allocatable :: sizes
             integer, dimension(:,:), intent(in) :: labelled_matrix
             integer, intent(in) :: number_of_labels
-            integer :: L,i,j,label
+            integer :: L,i,j
 
             L = size(labelled_matrix,1)
             allocate(sizes(number_of_labels))
@@ -227,7 +227,7 @@ module clusterlabelling
             logical, dimension(:,:), allocatable, intent(in) :: matrix
             integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
             integer, intent(inout) :: number_of_labels
-            integer, dimension(:), allocatable :: label_map, reduced_label_map, tmp
+            integer, dimension(:), allocatable :: label_map, reduced_label_map
             integer :: L, i, j, highest_label
             integer :: up, left
 
