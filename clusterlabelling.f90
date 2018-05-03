@@ -139,6 +139,7 @@ module clusterlabelling
             do maxindex = num_bins, 1, -1
                 if(histogram(maxindex) /= 0) exit
             end do
+            maxindex = num_bins
             final_bin_mids = bin_mids(:maxindex)
             results = histogram(:maxindex)/(bin_sizes(:maxindex)*num_samples)
 
