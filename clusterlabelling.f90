@@ -38,9 +38,9 @@ module clusterlabelling
                     if(matrix(i,j) .and. labelled_matrix(i,j) == 0) then
                         number_of_labels = number_of_labels + 1
                         call growcluster(matrix,labelled_matrix,i,j,number_of_labels)
-                    endif
-                enddo
-            enddo
+                    end if
+                end do
+            end do
         end subroutine
         !/labelsubroutineend/!
 
@@ -58,27 +58,27 @@ module clusterlabelling
             if(i<L) then
                 if(matrix(i+1,j) .and. labelled_matrix(i+1,j)==0) then
                     call growcluster(matrix, labelled_matrix, i+1, j, label)
-                endif
-            endif
+                end if
+            end if
             if(j<L) then
                 if(matrix(i,j+1) .and. labelled_matrix(i,j+1)==0) then
                     call growcluster(matrix, labelled_matrix, i, j+1, label)
-                endif
-            endif
+                end if
+            end if
             if(i>1) then
                 if(matrix(i-1,j) .and. labelled_matrix(i-1,j)==0) then
                     call growcluster(matrix, labelled_matrix, i-1, j, label)
-                endif
-            endif
+                end if
+            end if
             if(j>1) then
                 if(matrix(i,j-1) .and. labelled_matrix(i,j-1)==0) then
                     call growcluster(matrix, labelled_matrix, i, j-1, label)
-                endif
-            endif
+                end if
+            end if
         end subroutine
         !/growclustersubroutineend/!
 
-        function sizes(labelled_matrix, number_of_labels)
+        function find_sizes(labelled_matrix, number_of_labels) result(sizes)
             integer, dimension(:), allocatable :: sizes
             integer, dimension(:,:), intent(in) :: labelled_matrix
             integer, intent(in) :: number_of_labels
@@ -93,10 +93,10 @@ module clusterlabelling
                     associate (label => labelled_matrix(i,j))
                         if(label /= 0) then
                             sizes(label) = sizes(label) + 1
-                        endif
+                        end if
                     end associate
-                enddo
-            enddo
+                end do
+            end do
         end function
 
         subroutine cluster_number_density(p, L, num_samples, final_bin_mids, results)
@@ -144,6 +144,7 @@ module clusterlabelling
 
 
         end subroutine
+
         function find_spanning_cluster(labelled_matrix, number_of_labels) result(spanning_label)
             integer :: spanning_label
             integer, dimension(:,:), allocatable, intent(in) :: labelled_matrix
@@ -296,12 +297,12 @@ module clusterlabelling
                             up = 0
                         else
                             up = labelled_matrix(i-1, j)
-                        endif
+                        end if
                         if(j==1) then
                             left = 0
                         else
                             left = labelled_matrix(i, j-1)
-                        endif
+                        end if
 
                         if(left==0) then
                             if(up==0) then
@@ -310,23 +311,23 @@ module clusterlabelling
                                 label_map(highest_label) = highest_label
                             else
                                 labelled_matrix(i,j) = up
-                            endif
+                            end if
                         else
                             if(up==0 .or. left==up) then
                                 labelled_matrix(i,j) = left
                             else
                                 labelled_matrix(i,j) = min(left,up)
                                 label_map(max(left,up)) = min(left,up)
-                            endif
-                        endif
-                    endif
-                enddo
-            enddo
+                            end if
+                        end if
+                    end if
+                end do
+            end do
 
             ! write(*,*) "Labels before reduction:"
             ! do i = 1, highest_label
             !     write(*,*) i, label_map(i)
-            ! enddo
+            ! end do
 
             do i = highest_label, 1, -1
                 j = i
@@ -334,12 +335,12 @@ module clusterlabelling
                     j = label_map(j)
                 end do
                 label_map(i) = j
-            enddo
+            end do
 
             ! write(*,*) "Labels after reduction:"
             ! do i = 1, highest_label
             !     write(*,*) i, label_map(i)
-            ! enddo
+            ! end do
 
             allocate(reduced_label_map(highest_label))
             reduced_label_map = 0
@@ -348,8 +349,8 @@ module clusterlabelling
                 if(label_map(i) == i) then
                     number_of_labels = number_of_labels + 1
                     reduced_label_map(i) = number_of_labels
-                endif
-            enddo
+                end if
+            end do
 
             ! write(*,*) "Numer of  labels:", number_of_labels
 
@@ -357,6 +358,6 @@ module clusterlabelling
 
             do concurrent(j=1:L, i=1:L, labelled_matrix(i,j)/=0)
                 labelled_matrix(i,j) = reduced_label_map(label_map(labelled_matrix(i,j)))
-            enddo
+            end do
         end subroutine
 end module clusterlabelling
