@@ -16,6 +16,11 @@
    gcc-3.0 -Wall -std=c99 hk.c -o hk
 
    http://www.ocf.berkeley.edu/~fricke/projects/hoshenkopelman/hoshenkopelman.html
+
+   =======================
+
+   Modified slightly for interfacing with Fortran
+   2018-05-04 by Anders Johansson.
 */
 
 #include <stdio.h>
@@ -103,7 +108,6 @@ void print_matrix(int *matrix, int m, int n) {
 int hoshen_kopelman(int *matrix, int m, int n) {
 
   uf_initialize(m * n / 2);
-  print_matrix(matrix,m,n);
 
   /* scan the matrix */
 
@@ -155,9 +159,6 @@ int hoshen_kopelman(int *matrix, int m, int n) {
   free(new_labels);
   uf_done();
 
-  printf("\n\n\nC DONE\n\n\n");
-  printf("\n%d\n",total_clusters);
-  fflush(stdin);
   return total_clusters;
 }
 
