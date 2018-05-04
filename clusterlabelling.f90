@@ -17,8 +17,48 @@ module clusterlabelling
             binary_matrix = p_matrix < p
         end function
 
-        !/labelsubroutinestart/!
         subroutine label(matrix, labelled_matrix, number_of_labels)
+            use, intrinsic :: ISO_C_BINDING, only: c_int
+            logical, dimension(:,:), allocatable, intent(in) :: matrix
+            integer(c_int), dimension(:), allocatable :: int_matrix
+            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
+            integer, intent(inout) :: number_of_labels
+            integer :: L, i, j
+            INTERFACE
+              function hoshen_kopelman(matrix, m, n) result(num_labels) BIND(C)
+                USE, INTRINSIC :: ISO_C_BINDING, ONLY: C_INT
+                IMPLICIT NONE
+                INTEGER(c_int), dimension(*), intent(inout) :: matrix
+                integer(c_int), value, intent(in) :: m, n
+                integer(c_int) :: num_labels
+              END function
+            END INTERFACE
+
+            L = size(matrix,1)
+            number_of_labels = 0
+            allocate(int_matrix(L*L))
+            do j=1,L
+                do i=1,L
+                    if(matrix(i,j)) then
+                        int_matrix(i*L+j-L) = 1
+                    else
+                        int_matrix(i*L+j-L) = 0
+                    end if
+                end do
+            end do
+            write(*,*) int_matrix
+            !write(*,fmt="("//stringfromint(L)//"i3)") int_matrix
+            ! where(matrix)
+            !     int_matrix = 1
+            ! else where
+            !     int_matrix = 0
+            ! end where
+            number_of_labels = hoshen_kopelman(int_matrix, L, L)
+            write(*,*) number_of_labels
+
+        end subroutine
+        !/labelsubroutinestart/!
+        subroutine label_stackoverflow(matrix, labelled_matrix, number_of_labels)
             logical, dimension(:,:), allocatable, intent(in) :: matrix
             integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
             integer, intent(inout) :: number_of_labels
