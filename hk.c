@@ -97,7 +97,7 @@ void uf_done(void) {
 void print_matrix(int *matrix, int m, int n) {
     for (int i=0; i<m; i++) {
         for (int j=0; j<n; j++)
-            printf("%3d ",matrix[(i)*m+j]);
+            printf("%3d ",matrix[(i)*n+j]);
         printf("\n");
     }
 }
@@ -113,23 +113,23 @@ int hoshen_kopelman(int *matrix, int m, int n) {
 
     for (int i=0; i<m; i++)
         for (int j=0; j<n; j++)
-            if (matrix[(i)*m+j]) {                        // if occupied ...
+            if (matrix[(i)*n+j]) {                        // if occupied ...
 
-                int up = (i==0 ? 0 : matrix[(i-1)*m+j]);    //  look up
-                int left = (j==0 ? 0 : matrix[(i)*m+j-1]);  //  look left
+                int up = (i==0 ? 0 : matrix[(i-1)*n+j]);    //  look up
+                int left = (j==0 ? 0 : matrix[(i)*n+j-1]);  //  look left
 
                 switch (!!up + !!left) {
 
                     case 0:
-                        matrix[(i)*m+j] = uf_make_set();      // a new cluster
+                        matrix[(i)*n+j] = uf_make_set();      // a new cluster
                         break;
 
                     case 1:                              // part of an existing cluster
-                        matrix[(i)*m+j] = max(up,left);       // whichever is nonzero is labelled
+                        matrix[(i)*n+j] = max(up,left);       // whichever is nonzero is labelled
                         break;
 
                     case 2:                              // this site binds two clusters
-                        matrix[(i)*m+j] = uf_union(up, left);
+                        matrix[(i)*n+j] = uf_union(up, left);
                         break;
                 }
 
@@ -145,13 +145,13 @@ int hoshen_kopelman(int *matrix, int m, int n) {
 
     for (int i=0; i<m; i++)
         for (int j=0; j<n; j++)
-            if (matrix[(i)*m+j]) {
-                int x = uf_find(matrix[(i)*m+j]);
+            if (matrix[(i)*n+j]) {
+                int x = uf_find(matrix[(i)*n+j]);
                 if (new_labels[x] == 0) {
                     new_labels[0]++;
                     new_labels[x] = new_labels[0];
                 }
-                matrix[(i)*m+j] = new_labels[x];
+                matrix[(i)*n+j] = new_labels[x];
             }
 
     int total_clusters = new_labels[0];
@@ -169,16 +169,16 @@ void check_labelling(int **matrix, int m, int n) {
     int N,S,E,W;
     for (int i=0; i<m; i++)
         for (int j=0; j<n; j++)
-            if (matrix[(i)*m+j]) {
-                N = ( i==0 ? 0 : matrix[(i-1)*m+j] );
-                S = ( i==m-1 ? 0 : matrix[(i+1)*m+j] );
-                E = ( j==n-1 ? 0 : matrix[(i)*m+j+1] );
-                W = ( j==0 ? 0 : matrix[(i)*m+j-1] );
+            if (matrix[(i)*n+j]) {
+                N = ( i==0 ? 0 : matrix[(i-1)*n+j] );
+                S = ( i==m-1 ? 0 : matrix[(i+1)*n+j] );
+                E = ( j==n-1 ? 0 : matrix[(i)*n+j+1] );
+                W = ( j==0 ? 0 : matrix[(i)*n+j-1] );
 
-                assert( N==0 || matrix[(i)*m+j]==N );
-                assert( S==0 || matrix[(i)*m+j]==S );
-                assert( E==0 || matrix[(i)*m+j]==E );
-                assert( W==0 || matrix[(i)*m+j]==W );
+                assert( N==0 || matrix[(i)*n+j]==N );
+                assert( S==0 || matrix[(i)*n+j]==S );
+                assert( E==0 || matrix[(i)*n+j]==E );
+                assert( W==0 || matrix[(i)*n+j]==W );
             }
 }
 
