@@ -22,6 +22,7 @@ module utilities
             dx = (b - a)/(N - 1)
             linspace = [ (a + i*dx, i=0, N-1) ]
         end function
+
         subroutine linfit(x, y, slope, const)
             real(kind=dp), dimension(:), intent(in) :: x, y
             real(kind=dp), intent(in out) :: slope, const
