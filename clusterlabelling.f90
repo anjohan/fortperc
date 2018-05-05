@@ -128,25 +128,26 @@ module clusterlabelling
             end do
         end function
 
-        subroutine cluster_number_density(p, L, num_samples, final_bin_mids, results)
+        subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
             integer, intent(in) :: L, num_samples
             real(kind=dp), intent(in) :: p
-            real(kind=dp), dimension(:), intent(inout), allocatable :: final_bin_mids, results
+            real(kind=dp), dimension(:), intent(inout), allocatable :: bin_mids, results
 
-            integer :: num_bins, i, j, num_labels, sizeindex, maxindex, spanning_label
+            integer :: num_bins, i, j, num_labels, sizeindex, spanning_label
             real(kind=dp) :: a, loga
 
             logical, dimension(:,:), allocatable :: binary_matrix
             integer, dimension(:,:), allocatable :: label_matrix
             integer, dimension(:), allocatable :: clustersizes, histogram
-            real(kind=dp), dimension(:), allocatable :: bin_edges, bin_sizes, bin_mids
+            real(kind=dp), dimension(:), allocatable :: bin_edges, bin_sizes
 
+            !/cndstart/!
             a = 1.5d0
             loga = log(a)
 
-            num_bins = ceiling(log(1.0d0*L*L)/loga)
-            bin_edges = a**[(i, i=0,num_bins)]
-            bin_mids = 0.5*(bin_edges(1:num_bins) + bin_edges(2:num_bins+1))
+            num_bins  = ceiling(log(1.0d0*L**2)/loga)
+            bin_edges = a**[(i, i=0 ,num_bins)]
+            bin_mids  = 0.5*(bin_edges(1:num_bins) + bin_edges(2:num_bins+1))
             bin_sizes = bin_edges(2:num_bins+1) - bin_edges(1:num_bins)
 
             allocate(histogram(1:num_bins))
@@ -165,14 +166,8 @@ module clusterlabelling
                 end do
             end do
 
-            do maxindex = num_bins, 1, -1
-                if(histogram(maxindex) /= 0) exit
-            end do
-            maxindex = num_bins
-            final_bin_mids = bin_mids(:maxindex)
-            results = histogram(:maxindex)/(bin_sizes(:maxindex)*num_samples)
-
-
+            results = histogram/(bin_sizes*num_samples)
+            !/cndend/!
         end subroutine
 
         function find_spanning_cluster(labelled_matrix, number_of_labels) result(spanning_label)
