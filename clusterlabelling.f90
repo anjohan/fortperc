@@ -38,16 +38,6 @@ module clusterlabelling
             if(.not. allocated(labelled_matrix)) then
                 allocate(labelled_matrix(L,L))
             endif
-            ! do j=1,L
-            !     do i=1,L
-            !         if(matrix(i,j)) then
-            !             labelled_matrix(i,j) = 1
-            !         else
-            !             labelled_matrix(i,j) = 0
-            !         end if
-            !     end do
-            ! end do
-            !write(*,fmt="("//stringfromint(L)//"i3)") int_matrix
             where(matrix)
                 labelled_matrix = 1
             else where
