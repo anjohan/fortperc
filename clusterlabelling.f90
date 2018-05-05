@@ -166,7 +166,7 @@ module clusterlabelling
                 end do
             end do
 
-            results = histogram/(bin_sizes*num_samples)
+            results = histogram/(L**2 * num_samples * bin_sizes)
             !/cndend/!
         end subroutine
 
