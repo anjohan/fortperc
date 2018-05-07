@@ -37,6 +37,9 @@ module clusterlabelling
 
             if(.not. allocated(labelled_matrix)) then
                 allocate(labelled_matrix(L,L))
+            else if(size(labelled_matrix,1) /= L) then
+                deallocate(labelled_matrix)
+                allocate(labelled_matrix(L,L))
             endif
             where(matrix)
                 labelled_matrix = 1
