@@ -22,7 +22,7 @@ module clusterlabelling
             logical, dimension(:,:), allocatable, intent(in) :: matrix
             integer(c_int), dimension(:,:), allocatable, intent(inout) :: labelled_matrix
             integer, intent(inout) :: number_of_labels
-            integer :: L, i, j
+            integer :: L
             interface
                 function hoshen_kopelman(matrix, m, n) result(num_labels) BIND(C)
                     use, intrinsic :: iso_c_binding, only: c_int
