@@ -49,66 +49,6 @@ module clusterlabelling
             number_of_labels = hoshen_kopelman(labelled_matrix, L, L)
 
         end subroutine
-        !/labelsubroutinestart/!
-        subroutine label_stackoverflow(matrix, labelled_matrix, number_of_labels)
-            logical, dimension(:,:), allocatable, intent(in) :: matrix
-            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
-            integer, intent(inout) :: number_of_labels
-            integer :: L, i, j
-
-            L = size(matrix,1)
-            number_of_labels = 0
-
-            if(.not. allocated(labelled_matrix)) then
-                allocate(labelled_matrix(L,L))
-            end if
-
-            labelled_matrix = 0
-
-            do j=1,L
-                do i=1,L
-                    if(matrix(i,j) .and. labelled_matrix(i,j) == 0) then
-                        number_of_labels = number_of_labels + 1
-                        call growcluster(matrix,labelled_matrix,i,j,number_of_labels)
-                    end if
-                end do
-            end do
-        end subroutine
-        !/labelsubroutineend/!
-
-        !/growclustersubroutinestart/!
-        recursive subroutine growcluster(matrix, labelled_matrix, i, j, label)
-            logical, dimension(:,:), allocatable, intent(in) :: matrix
-            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
-            integer, intent(in) :: i, j, label
-            integer :: L
-
-            L = size(matrix,1)
-
-            labelled_matrix(i,j) = label
-
-            if(i<L) then
-                if(matrix(i+1,j) .and. labelled_matrix(i+1,j)==0) then
-                    call growcluster(matrix, labelled_matrix, i+1, j, label)
-                end if
-            end if
-            if(j<L) then
-                if(matrix(i,j+1) .and. labelled_matrix(i,j+1)==0) then
-                    call growcluster(matrix, labelled_matrix, i, j+1, label)
-                end if
-            end if
-            if(i>1) then
-                if(matrix(i-1,j) .and. labelled_matrix(i-1,j)==0) then
-                    call growcluster(matrix, labelled_matrix, i-1, j, label)
-                end if
-            end if
-            if(j>1) then
-                if(matrix(i,j-1) .and. labelled_matrix(i,j-1)==0) then
-                    call growcluster(matrix, labelled_matrix, i, j-1, label)
-                end if
-            end if
-        end subroutine
-        !/growclustersubroutineend/!
 
         function find_sizes(labelled_matrix, number_of_labels) result(sizes)
             integer, dimension(:), allocatable :: sizes
@@ -295,6 +235,67 @@ module clusterlabelling
 
             spanning_probability = count(results)/real(number_of_samples,kind=dp)
         end function
+
+        !/labelsubroutinestart/!
+        subroutine label_stackoverflow(matrix, labelled_matrix, number_of_labels)
+            logical, dimension(:,:), allocatable, intent(in) :: matrix
+            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
+            integer, intent(inout) :: number_of_labels
+            integer :: L, i, j
+
+            L = size(matrix,1)
+            number_of_labels = 0
+
+            if(.not. allocated(labelled_matrix)) then
+                allocate(labelled_matrix(L,L))
+            end if
+
+            labelled_matrix = 0
+
+            do j=1,L
+                do i=1,L
+                    if(matrix(i,j) .and. labelled_matrix(i,j) == 0) then
+                        number_of_labels = number_of_labels + 1
+                        call growcluster(matrix,labelled_matrix,i,j,number_of_labels)
+                    end if
+                end do
+            end do
+        end subroutine
+        !/labelsubroutineend/!
+
+        !/growclustersubroutinestart/!
+        recursive subroutine growcluster(matrix, labelled_matrix, i, j, label)
+            logical, dimension(:,:), allocatable, intent(in) :: matrix
+            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
+            integer, intent(in) :: i, j, label
+            integer :: L
+
+            L = size(matrix,1)
+
+            labelled_matrix(i,j) = label
+
+            if(i<L) then
+                if(matrix(i+1,j) .and. labelled_matrix(i+1,j)==0) then
+                    call growcluster(matrix, labelled_matrix, i+1, j, label)
+                end if
+            end if
+            if(j<L) then
+                if(matrix(i,j+1) .and. labelled_matrix(i,j+1)==0) then
+                    call growcluster(matrix, labelled_matrix, i, j+1, label)
+                end if
+            end if
+            if(i>1) then
+                if(matrix(i-1,j) .and. labelled_matrix(i-1,j)==0) then
+                    call growcluster(matrix, labelled_matrix, i-1, j, label)
+                end if
+            end if
+            if(j>1) then
+                if(matrix(i,j-1) .and. labelled_matrix(i,j-1)==0) then
+                    call growcluster(matrix, labelled_matrix, i, j-1, label)
+                end if
+            end if
+        end subroutine
+        !/growclustersubroutineend/!
 
         subroutine label_wrongly(matrix, labelled_matrix, number_of_labels)
             logical, dimension(:,:), allocatable, intent(in) :: matrix
