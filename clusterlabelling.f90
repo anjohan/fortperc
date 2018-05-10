@@ -1,5 +1,6 @@
 module clusterlabelling
     use utilities
+    use hk
     implicit none
     real(kind=dp), parameter :: pc = 0.592746
     contains
@@ -23,15 +24,6 @@ module clusterlabelling
             integer(c_int), dimension(:,:), allocatable, intent(inout) :: labelled_matrix
             integer, intent(inout) :: number_of_labels
             integer :: L
-            interface
-                function hoshen_kopelman(matrix, m, n) result(num_labels) BIND(C)
-                    use, intrinsic :: iso_c_binding, only: c_int
-                    implicit none
-                    integer(c_int), dimension(*), intent(inout) :: matrix
-                    integer(c_int), value, intent(in) :: m, n
-                    integer(c_int) :: num_labels
-                end function
-            end interface
 
             L = size(matrix,1)
 
@@ -46,7 +38,7 @@ module clusterlabelling
             else where
                 labelled_matrix = 0
             end where
-            number_of_labels = hoshen_kopelman(labelled_matrix, L, L)
+            number_of_labels = hoshen_kopelman(labelled_matrix)
 
         end subroutine
 
@@ -95,6 +87,7 @@ module clusterlabelling
 
             allocate(histogram(1:num_bins))
 
+            !$omp parallel do private(label_matrix)
             do i = 1, num_samples
                 binary_matrix = create_binary_matrix(p, L)
                 call label(binary_matrix, label_matrix, num_labels)
@@ -104,10 +97,12 @@ module clusterlabelling
                 do j = 1, num_labels
                     if(j /= spanning_label) then
                         sizeindex = floor(log(1.0d0*clustersizes(j))/loga) + 1
+                        !$omp atomic
                         histogram(sizeindex) = histogram(sizeindex) + 1
                     end if
                 end do
             end do
+            !$omp end parallel do
 
             results = histogram/(L**2 * num_samples * bin_sizes)
             !/cndend/!
@@ -296,97 +291,4 @@ module clusterlabelling
             end if
         end subroutine
         !/growclustersubroutineend/!
-
-        subroutine label_wrongly(matrix, labelled_matrix, number_of_labels)
-            logical, dimension(:,:), allocatable, intent(in) :: matrix
-            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
-            integer, intent(inout) :: number_of_labels
-            integer, dimension(:), allocatable :: label_map, reduced_label_map
-            integer :: L, i, j, highest_label
-            integer :: up, left
-
-
-            L = size(matrix,1)
-            number_of_labels = 0
-
-            if(.not. allocated(labelled_matrix)) then
-                allocate(labelled_matrix(L,L))
-            end if
-
-            labelled_matrix = 0
-            highest_label = 0
-
-            label_map = [ (0, i=1,L*L) ]
-            ! write(*,*) "Label map:", label_map
-
-            do j=1,L
-                do i=1,L
-                    if(matrix(i,j)) then
-                        if(i==1) then
-                            up = 0
-                        else
-                            up = labelled_matrix(i-1, j)
-                        end if
-                        if(j==1) then
-                            left = 0
-                        else
-                            left = labelled_matrix(i, j-1)
-                        end if
-
-                        if(left==0) then
-                            if(up==0) then
-                                highest_label = highest_label + 1
-                                labelled_matrix(i,j) = highest_label
-                                label_map(highest_label) = highest_label
-                            else
-                                labelled_matrix(i,j) = up
-                            end if
-                        else
-                            if(up==0 .or. left==up) then
-                                labelled_matrix(i,j) = left
-                            else
-                                labelled_matrix(i,j) = min(left,up)
-                                label_map(max(left,up)) = min(left,up)
-                            end if
-                        end if
-                    end if
-                end do
-            end do
-
-            ! write(*,*) "Labels before reduction:"
-            ! do i = 1, highest_label
-            !     write(*,*) i, label_map(i)
-            ! end do
-
-            do i = highest_label, 1, -1
-                j = i
-                do while(label_map(j) /= j)
-                    j = label_map(j)
-                end do
-                label_map(i) = j
-            end do
-
-            ! write(*,*) "Labels after reduction:"
-            ! do i = 1, highest_label
-            !     write(*,*) i, label_map(i)
-            ! end do
-
-            allocate(reduced_label_map(highest_label))
-            reduced_label_map = 0
-            number_of_labels = 0
-            do i = 1, highest_label
-                if(label_map(i) == i) then
-                    number_of_labels = number_of_labels + 1
-                    reduced_label_map(i) = number_of_labels
-                end if
-            end do
-
-            ! write(*,*) "Numer of  labels:", number_of_labels
-
-            ! write(*,*) "Overwriting labels."
-
-            do concurrent(j=1:L, i=1:L, labelled_matrix(i,j)/=0)
-                labelled_matrix(i,j) = reduced_label_map(label_map(labelled_matrix(i,j)))
-            end do
-        end subroutine
 end module clusterlabelling
