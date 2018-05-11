@@ -233,12 +233,33 @@ module clusterlabelling
             spanning_probability = count(results)/real(num_samples,kind=dp)
         end function
 
-        function spanning_probability_inverse(x, L, num_samples) result(p)
-            real(kind=dp), intent(in) :: x
+        function spanning_probability_inverse(x, L, num_samples, tolerance) result(p_x)
+            real(kind=dp), intent(in) :: x, tolerance
+            real(kind=dp) :: p_x
             integer, intent(in) :: L, num_samples
-            real(kind=dp) :: p
-        end function
+            real(kind=dp) :: lower, upper, lowerPI, upperPI, mid, midPI
 
+            !/invPIstart/!
+            lower = 0
+            upper = 1
+            lowerPI = 0
+            upperPI = 1
+
+            do while(upper - lower > tolerance)
+                mid = (lower + upper)/2
+                midPI = spanning_probability(mid, L, num_samples)
+                if(midPI > x) then
+                    upper = mid
+                    upperPI = midPI
+                else
+                    lower = mid
+                    lowerPI = midPI
+                end if
+            end do
+            p_x = mid
+            !/invPIend/!
+
+        end function
 
         !/labelsubroutinestart/!
         subroutine label_stackoverflow(matrix, labelled_matrix, num_labels)
