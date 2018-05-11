@@ -88,7 +88,10 @@ module clusterlabelling
             allocate(histogram(1:num_bins))
             histogram = 0
 
-            !$omp parallel do private(binary_matrix, label_matrix, num_labels, clustersizes, spanning_label, sizeindex)
+            !$omp  parallel do &
+            !$omp& private(binary_matrix, label_matrix, num_labels, &
+            !$omp&         clustersizes, spanning_label, sizeindex) &
+            !$omp& reduction(+:histogram)
             do i = 1, num_samples
                 binary_matrix = create_binary_matrix(p, L)
                 call label(binary_matrix, label_matrix, num_labels)
@@ -98,7 +101,6 @@ module clusterlabelling
                 do j = 1, num_labels
                     if(j /= spanning_label) then
                         sizeindex = floor(log(1.0d0*clustersizes(j))/loga) + 1
-                        !$omp atomic update
                         histogram(sizeindex) = histogram(sizeindex) + 1
                     end if
                 end do
