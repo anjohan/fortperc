@@ -1,4 +1,4 @@
-module clusterlabelling
+module percolation
     use utilities
     use hk
     implicit none
@@ -321,4 +321,4 @@ module clusterlabelling
             end if
         end subroutine
         !/growclustersubroutineend/!
-end module clusterlabelling
+end module percolation
