@@ -29,7 +29,7 @@ module hk
         end function
 
         function hoshen_kopelman(matrix) result(new_num_clusters)
-            integer, dimension(:,:), allocatable :: matrix
+            integer, dimension(:,:) :: matrix
             integer :: num_clusters, new_num_clusters
             integer :: m, n, i, j, up, left, label
             integer, dimension(:), allocatable :: labels, new_labels
