@@ -122,7 +122,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
 	  data-placement="bottom" data-html="true"
-	  title="13.4% of total for source files.">49 statements</a>
+	  title="18.5% of total for source files.">69 statements</a>
      </li> 
      
      
@@ -405,7 +405,35 @@
 <a name="ln-56"></a><span class="k">                </span><span class="n">error</span> <span class="k">stop</span> <span class="s2">&quot;Problems with least squares&quot;</span>
 <a name="ln-57"></a>            <span class="n">endif</span>
 <a name="ln-58"></a>        <span class="k">end subroutine</span>
-<a name="ln-59"></a><span class="k">end module</span>
+<a name="ln-59"></a>
+<a name="ln-60"></a><span class="k">        function </span><span class="n">find_intersection</span><span class="p">(</span><span class="n">array1</span><span class="p">,</span> <span class="n">array2</span><span class="p">,</span> <span class="n">num_labels</span><span class="p">)</span> <span class="k">result</span><span class="p">(</span><span class="n">intersect_label</span><span class="p">)</span>
+<a name="ln-61"></a>            <span class="kt">integer</span><span class="p">,</span> <span class="k">dimension</span><span class="p">(:),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">array1</span><span class="p">,</span> <span class="n">array2</span>
+<a name="ln-62"></a>            <span class="kt">integer</span> <span class="kd">::</span> <span class="n">intersect_label</span>
+<a name="ln-63"></a>            <span class="kt">integer</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">num_labels</span>
+<a name="ln-64"></a>            <span class="kt">integer</span> <span class="kd">::</span> <span class="n">L</span><span class="p">,</span> <span class="n">i</span>
+<a name="ln-65"></a>            <span class="kt">logical</span><span class="p">,</span> <span class="k">dimension</span><span class="p">(:),</span> <span class="k">allocatable</span> <span class="kd">::</span> <span class="n">label_found</span>
+<a name="ln-66"></a>
+<a name="ln-67"></a>            <span class="n">L</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">array1</span><span class="p">)</span>
+<a name="ln-68"></a>
+<a name="ln-69"></a>            <span class="k">allocate</span><span class="p">(</span><span class="n">label_found</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="n">num_labels</span><span class="p">))</span>
+<a name="ln-70"></a>            <span class="c">!/intersectsnippetstart/!</span>
+<a name="ln-71"></a>            <span class="n">label_found</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="n">num_labels</span><span class="p">)</span> <span class="o">=</span> <span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<a name="ln-72"></a>
+<a name="ln-73"></a>            <span class="k">do </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span>
+<a name="ln-74"></a>                <span class="n">label_found</span><span class="p">(</span><span class="n">array1</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">=</span> <span class="p">.</span><span class="n">true</span><span class="p">.</span>
+<a name="ln-75"></a>            <span class="k">end do</span>
+<a name="ln-76"></a>
+<a name="ln-77"></a><span class="k">            do </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span>
+<a name="ln-78"></a>                <span class="k">if</span><span class="p">(</span><span class="n">array2</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/=</span> <span class="mi">0</span> <span class="p">.</span><span class="nb">and</span><span class="p">.</span> <span class="n">label_found</span><span class="p">(</span><span class="n">array2</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span> <span class="k">then</span>
+<a name="ln-79"></a><span class="k">                    </span><span class="n">intersect_label</span> <span class="o">=</span> <span class="n">array2</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<a name="ln-80"></a>                    <span class="k">return</span>
+<a name="ln-81"></a><span class="k">                end if</span>
+<a name="ln-82"></a><span class="k">            end do</span>
+<a name="ln-83"></a>            <span class="c">!/intersectsnippetend/!</span>
+<a name="ln-84"></a>
+<a name="ln-85"></a>            <span class="n">intersect_label</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<a name="ln-86"></a>        <span class="k">end function</span>
+<a name="ln-87"></a><span class="k">end module</span>
 </pre></div>
 
     </section>

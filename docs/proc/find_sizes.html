@@ -122,7 +122,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
 	  data-placement="bottom" data-html="true"
-	  title=" 5.1% of total for procedures.">18 statements</a>
+	  title=" 5.5% of total for procedures.">18 statements</a>
      </li> 
      
      
@@ -194,8 +194,6 @@
       
       <a class="list-group-item" href="../proc/growcluster.html">growcluster</a>
       
-      <a class="list-group-item" href="../proc/has_spanning_cluster_one_sample.html">has_spanning_cluster_one_sample</a>
-      
       <a class="list-group-item" href="../proc/hoshen_kopelman.html">hoshen_kopelman</a>
       
       <a class="list-group-item" href="../proc/label.html">label</a>
@@ -207,8 +205,6 @@
       <a class="list-group-item" href="../proc/linspace.html">linspace</a>
       
       <a class="list-group-item" href="../proc/spanning_density.html">spanning_density</a>
-      
-      <a class="list-group-item" href="../proc/spanning_density_one_sample.html">spanning_density_one_sample</a>
       
       <a class="list-group-item" href="../proc/spanning_probability.html">spanning_probability</a>
       
@@ -241,6 +237,9 @@ public function find_sizes(labelled_matrix, num_labels) result(sizes)
 
 
     
+    <p>Count the number of sites belonging to each cluster
+ in the labelled matrix.</p>
+    
 
     <h3>Arguments</h3>
     
@@ -265,7 +264,8 @@ public function find_sizes(labelled_matrix, num_labels) result(sizes)
   <td></td>
   
   <td>dimension(:,:)</td><td>::</td>
-  <td><strong>labelled_matrix</strong></td><td></td>
+  <td><strong>labelled_matrix</strong></td><td><p>Integer matrix with labelled clusters, resulting from
+ the Hoshen-Kopelman algorithm.</p></td>
   
 </tr>
 
@@ -275,12 +275,12 @@ public function find_sizes(labelled_matrix, num_labels) result(sizes)
   
 <tr>
   
-  <td><span class="anchor" id="variable-num_labels"></span>integer,</td>
+  <td><span class="anchor" id="variable-num_labels%7E2"></span>integer,</td>
   <td>intent(in)</td>
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>num_labels</strong></td><td></td>
+  <td><strong>num_labels</strong></td><td><p>The known number of clusters.</p></td>
   
 </tr>
 
@@ -296,7 +296,8 @@ public function find_sizes(labelled_matrix, num_labels) result(sizes)
     
 	 <h3>Return Value <small><span class="anchor" id="variable-sizes"></span>integer,
   dimension(:),allocatable</small></h3>
-    
+    <p>Array of cluster sizes. The i'th element is the size of
+ the cluster with label i.</p>
     
     
      
@@ -482,8 +483,6 @@ public function find_sizes(labelled_matrix, num_labels) result(sizes)
       
       <a class="list-group-item" href="../proc/growcluster.html">growcluster</a>
       
-      <a class="list-group-item" href="../proc/has_spanning_cluster_one_sample.html">has_spanning_cluster_one_sample</a>
-      
       <a class="list-group-item" href="../proc/hoshen_kopelman.html">hoshen_kopelman</a>
       
       <a class="list-group-item" href="../proc/label.html">label</a>
@@ -495,8 +494,6 @@ public function find_sizes(labelled_matrix, num_labels) result(sizes)
       <a class="list-group-item" href="../proc/linspace.html">linspace</a>
       
       <a class="list-group-item" href="../proc/spanning_density.html">spanning_density</a>
-      
-      <a class="list-group-item" href="../proc/spanning_density_one_sample.html">spanning_density_one_sample</a>
       
       <a class="list-group-item" href="../proc/spanning_probability.html">spanning_probability</a>
       

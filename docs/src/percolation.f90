@@ -1,13 +1,26 @@
 module percolation
+    !! A module with procedures for calculating various properties which
+    !! are interesting when doing numerical percolation experiments.
     use utilities
     use hk
     implicit none
+
+    private :: has_spanning_cluster_one_sample, spanning_density_one_sample
+
     real(kind=dp), parameter :: pc = 0.592746
+        !! Known critical probability for a two-dimensional site-percolating
+        !! system.
     contains
-        !> C
         function create_binary_matrix(p, L) result(binary_matrix)
+            !! Create a random, binary (`logical`) matrix,
+            !! which can be used in percolation experiments.
+
             logical, dimension(:,:), allocatable :: binary_matrix
+                !! Randomly created matrix, where each element is `.true.`
+                !! or `.false.` if a randomly generated number is smaller
+                !! or greater than p.
             real(kind=dp), intent(in) :: p
+                !! Probability for each matrix element to be `.true.`.
             integer, intent(in) :: L
 
             real(kind=dp), dimension(:,:), allocatable :: p_matrix
@@ -20,10 +33,16 @@ module percolation
         end function
 
         subroutine label(matrix, labelled_matrix, num_labels)
-            use, intrinsic :: iso_c_binding, only: c_int
-            logical, dimension(:,:), allocatable, intent(in) :: matrix
-            integer(c_int), dimension(:,:), allocatable, intent(inout) :: labelled_matrix
-            integer, intent(inout) :: num_labels
+            !! Alternative interface to the Hoshen-Kopelman algorithm
+            !! from the hk module, which uses a binary matrix created
+            !! by [[create_binary_matrix]].
+            logical, dimension(:,:), intent(in) :: matrix
+                !! Binary matrix where clusters will be identified.
+            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
+                !! Integer matrix which will store the labels of each cluster.
+                !! Reallocated if necessary.
+            integer, intent(out) :: num_labels
+                !! Overwritten with the total number of disjoint clusters.
             integer :: L
 
             L = size(matrix,1)
@@ -42,11 +61,17 @@ module percolation
             num_labels = hoshen_kopelman(labelled_matrix)
         end subroutine
 
-
         function find_sizes(labelled_matrix, num_labels) result(sizes)
+            !! Count the number of sites belonging to each cluster
+            !! in the labelled matrix.
             integer, dimension(:), allocatable :: sizes
+                !! Array of cluster sizes. The i'th element is the size of
+                !! the cluster with label i.
             integer, dimension(:,:), intent(in) :: labelled_matrix
+                !! Integer matrix with labelled clusters, resulting from
+                !! the Hoshen-Kopelman algorithm.
             integer, intent(in) :: num_labels
+                !! The known number of clusters.
             integer :: L,i,j
 
             L = size(labelled_matrix,1)
@@ -64,10 +89,43 @@ module percolation
             end do
         end function
 
-        subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
-            integer, intent(in) :: L, num_samples
+        subroutine cluster_number_density(p, L, num_samples, bin_mids, results, binsize_base)
+            !! Calculate the number density of clusters with different sizes.
+            !! The cluster number density is defined as
+            !! \\begin{equation}
+            !!      n(s,p) = \sum_{\text{MC-samples}}
+            !!                   \frac{\text{number of clusters with size }s}
+            !!                        {L^2\cdot\text{number of MC-samples}}.
+            !! \\end{equation}
+            !! Direct calculations will usually give bad results, as there
+            !! will be very few
+            !! clusters with large sizes compared to the numbers of clusters
+            !! with small sizes. This is circumvented by doing logarithmic
+            !! binning and averaging, i.e.
+            !! \\begin{equation}
+            !!      n\left([s+\Delta s),p\right) = \sum_{\text{MC-samples}}
+            !!                   \frac{\text{number of clusters with size }s
+            !!                         \in[s,s+\Delta s)}
+            !!                        {\Delta s\cdot L^2\cdot\text{number of MC-samples}},
+            !!      \label{eq:nsp}
+            !! \\end{equation}
+            !! where \\(\Delta s\\) are logarithmically distributed. After execution,
+            !! **bin_mids** will contain the centres of the bins.
+
+            integer, intent(in) :: L
+                !! Percolating systems will be \\(L\times L\\).
+            integer, intent(in) :: num_samples
+                !! Results will be averaged over this number of Monte Carlo-samples.
+                !! Sampling is parallelised.
             real(kind=dp), intent(in) :: p
-            real(kind=dp), dimension(:), intent(inout), allocatable :: bin_mids, results
+                !! Probability for a given site to allow transport.
+            real(kind=dp), intent(in), optional :: binsize_base
+                !! The edges of the logarithmically distributed bins will be
+                !! integer powers of this number. Default: 1.5.
+            real(kind=dp), dimension(:), intent(inout), allocatable :: bin_mids
+                !! Centres of bins.
+            real(kind=dp), dimension(:), intent(inout), allocatable :: results
+                !! Cluster number density in \eqref{eq:nsp}.
 
             integer :: num_bins, i, j, num_labels, sizeindex, spanning_label
             real(kind=dp) :: a, loga
@@ -77,8 +135,13 @@ module percolation
             integer, dimension(:), allocatable :: clustersizes, histogram
             real(kind=dp), dimension(:), allocatable :: bin_edges, bin_sizes
 
+            if(present(binsize_base)) then
+                a = binsize_base
+            else
+                a = 1.5d0
+            end if
+
             !/cndstart/!
-            a = 1.5d0
             loga = log(a)
 
             num_bins  = ceiling(log(1.0d0*L**2)/loga)
@@ -113,9 +176,15 @@ module percolation
         end subroutine
 
         function find_spanning_cluster(labelled_matrix, num_labels) result(spanning_label)
+            !! Find the label of the percolating cluster, i.e. the one spanning from
+            !! one side of the system to the opposing side.
+
             integer :: spanning_label
-            integer, dimension(:,:), allocatable, intent(in) :: labelled_matrix
+                !! Label of the percolating cluster.
+            integer, dimension(:,:), intent(in) :: labelled_matrix
+                !! Labelled matrix of clusters.
             integer, intent(in) :: num_labels
+                !! Known number of clusters.
             integer :: L
 
             L = size(labelled_matrix,1)
@@ -125,34 +194,6 @@ module percolation
             if (spanning_label == -1) then
                 spanning_label = find_intersection(labelled_matrix(1,:), labelled_matrix(L,:), num_labels)
             end if
-        end function
-
-        function find_intersection(array1, array2, num_labels) result(intersect_label)
-            integer, dimension(:), intent(in) :: array1, array2
-            integer :: intersect_label
-            integer, intent(in) :: num_labels
-            integer :: L, i
-            logical, dimension(:), allocatable :: label_found
-
-            L = size(array1)
-
-            allocate(label_found(0:num_labels))
-            !/intersectsnippetstart/!
-            label_found(0:num_labels) = .false.
-
-            do i=1,L
-                label_found(array1(i)) = .true.
-            end do
-
-            do i=1,L
-                if(array2(i) /= 0 .and. label_found(array2(i))) then
-                    intersect_label = array2(i)
-                    return
-                end if
-            end do
-            !/intersectsnippetend/!
-
-            intersect_label = -1
         end function
 
         function spanning_density_one_sample(p, L) result(spanning_density)

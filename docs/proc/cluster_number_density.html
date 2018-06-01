@@ -122,7 +122,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
 	  data-placement="bottom" data-html="true"
-	  title=" 9.1% of total for procedures.">32 statements</a>
+	  title="11.9% of total for procedures.">39 statements</a>
      </li> 
      
      
@@ -194,8 +194,6 @@
       
       <a class="list-group-item" href="../proc/growcluster.html">growcluster</a>
       
-      <a class="list-group-item" href="../proc/has_spanning_cluster_one_sample.html">has_spanning_cluster_one_sample</a>
-      
       <a class="list-group-item" href="../proc/hoshen_kopelman.html">hoshen_kopelman</a>
       
       <a class="list-group-item" href="../proc/label.html">label</a>
@@ -207,8 +205,6 @@
       <a class="list-group-item" href="../proc/linspace.html">linspace</a>
       
       <a class="list-group-item" href="../proc/spanning_density.html">spanning_density</a>
-      
-      <a class="list-group-item" href="../proc/spanning_density_one_sample.html">spanning_density_one_sample</a>
       
       <a class="list-group-item" href="../proc/spanning_probability.html">spanning_probability</a>
       
@@ -231,7 +227,7 @@
     
     <div class="col-md-9" id='text'>
     <h2>
-public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
+public subroutine cluster_number_density(p, L, num_samples, bin_mids, results, binsize_base)
     
     
 	 
@@ -240,6 +236,28 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
   
 
 
+    
+    <p>Calculate the number density of clusters with different sizes.
+ The cluster number density is defined as
+ \begin{equation}
+      n(s,p) = \sum_{\text{MC-samples}}
+                   \frac{\text{number of clusters with size }s}
+                        {L^2\cdot\text{number of MC-samples}}.
+ \end{equation}
+ Direct calculations will usually give bad results, as there
+ will be very few
+ clusters with large sizes compared to the numbers of clusters
+ with small sizes. This is circumvented by doing logarithmic
+ binning and averaging, i.e.
+ \begin{equation}
+      n\left([s+\Delta s),p\right) = \sum_{\text{MC-samples}}
+                   \frac{\text{number of clusters with size }s
+                         \in[s,s+\Delta s)}
+                        {\Delta s\cdot L^2\cdot\text{number of MC-samples}},
+      \label{eq:nsp}
+ \end{equation}
+ where \(\Delta s\) are logarithmically distributed. After execution,
+ <strong>bin_mids</strong> will contain the centres of the bins.</p>
     
 
     <h3>Arguments</h3>
@@ -260,12 +278,12 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
   
 <tr>
   
-  <td><span class="anchor" id="variable-p%7E6"></span>real(kind=dp),</td>
+  <td><span class="anchor" id="variable-p%7E4"></span>real(kind=dp),</td>
   <td>intent(in)</td>
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>p</strong></td><td></td>
+  <td><strong>p</strong></td><td><p>Probability for a given site to allow transport.</p></td>
   
 </tr>
 
@@ -275,12 +293,12 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
   
 <tr>
   
-  <td><span class="anchor" id="variable-l%7E7"></span>integer,</td>
+  <td><span class="anchor" id="variable-l%7E5"></span>integer,</td>
   <td>intent(in)</td>
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>L</strong></td><td></td>
+  <td><strong>L</strong></td><td><p>Percolating systems will be \(L\times L\).</p></td>
   
 </tr>
 
@@ -295,7 +313,8 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>num_samples</strong></td><td></td>
+  <td><strong>num_samples</strong></td><td><p>Results will be averaged over this number of Monte Carlo-samples.
+ Sampling is parallelised.</p></td>
   
 </tr>
 
@@ -310,7 +329,7 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
   <td></td>
   
   <td>dimension(:), allocatable</td><td>::</td>
-  <td><strong>bin_mids</strong></td><td></td>
+  <td><strong>bin_mids</strong></td><td><p>Centres of bins.</p></td>
   
 </tr>
 
@@ -325,7 +344,23 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
   <td></td>
   
   <td>dimension(:), allocatable</td><td>::</td>
-  <td><strong>results</strong></td><td></td>
+  <td><strong>results</strong></td><td><p>Cluster number density in \eqref{eq:nsp}.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-binsize_base"></span>real(kind=dp),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>binsize_base</strong></td><td><p>The edges of the logarithmically distributed bins will be
+ integer powers of this number. Default: 1.5.</p></td>
   
 </tr>
 
@@ -369,35 +404,35 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
 <path fill="none" stroke="#000000" d="M98.422,-87.0737C119.5185,-95.7433 148.8691,-107.5217 175,-117 182.185,-119.6062 189.873,-122.2504 197.3387,-124.7434"/>
 <polygon fill="#000000" stroke="#000000" points="196.371,-128.1097 206.9641,-127.9177 198.5634,-121.4618 196.371,-128.1097"/>
 </g>
-<!-- proc~label -->
-<g id="proc~~cluster_number_density~~CallsGraph_node3" class="node">
-<title>proc~label</title>
-<g id="a_proc~~cluster_number_density~~CallsGraph_node3"><a xlink:href="../proc/label.html" xlink:title="label">
-<polygon fill="#d9534f" stroke="#d9534f" points="266,-108 212,-108 212,-84 266,-84 266,-108"/>
-<text text-anchor="middle" x="239" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">label</text>
-</a>
-</g>
-</g>
-<!-- proc~cluster_number_density&#45;&gt;proc~label -->
-<g id="proc~~cluster_number_density~~CallsGraph_edge7" class="edge">
-<title>proc~cluster_number_density&#45;&gt;proc~label</title>
-<path fill="none" stroke="#000000" d="M139.4207,-83.6627C160.8653,-86.3196 183.6173,-89.1384 201.952,-91.41"/>
-<polygon fill="#000000" stroke="#000000" points="201.5651,-94.8887 211.9196,-92.6449 202.4258,-87.9418 201.5651,-94.8887"/>
-</g>
 <!-- proc~create_binary_matrix -->
-<g id="proc~~cluster_number_density~~CallsGraph_node4" class="node">
+<g id="proc~~cluster_number_density~~CallsGraph_node3" class="node">
 <title>proc~create_binary_matrix</title>
-<g id="a_proc~~cluster_number_density~~CallsGraph_node4"><a xlink:href="../proc/create_binary_matrix.html" xlink:title="create_binary_matrix">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="302,-66 176,-66 176,-42 302,-42 302,-66"/>
-<text text-anchor="middle" x="239" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">create_binary_matrix</text>
+<g id="a_proc~~cluster_number_density~~CallsGraph_node3"><a xlink:href="../proc/create_binary_matrix.html" xlink:title="create_binary_matrix">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="302,-108 176,-108 176,-84 302,-84 302,-108"/>
+<text text-anchor="middle" x="239" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">create_binary_matrix</text>
 </a>
 </g>
 </g>
 <!-- proc~cluster_number_density&#45;&gt;proc~create_binary_matrix -->
-<g id="proc~~cluster_number_density~~CallsGraph_edge8" class="edge">
+<g id="proc~~cluster_number_density~~CallsGraph_edge7" class="edge">
 <title>proc~cluster_number_density&#45;&gt;proc~create_binary_matrix</title>
-<path fill="none" stroke="#000000" d="M139.4207,-66.3373C148.0726,-65.2653 156.9374,-64.1671 165.639,-63.089"/>
-<polygon fill="#000000" stroke="#000000" points="166.2627,-66.5386 175.7564,-61.8355 165.4019,-59.5917 166.2627,-66.5386"/>
+<path fill="none" stroke="#000000" d="M139.4207,-83.6627C148.0726,-84.7347 156.9374,-85.8329 165.639,-86.911"/>
+<polygon fill="#000000" stroke="#000000" points="165.4019,-90.4083 175.7564,-88.1645 166.2627,-83.4614 165.4019,-90.4083"/>
+</g>
+<!-- proc~label -->
+<g id="proc~~cluster_number_density~~CallsGraph_node4" class="node">
+<title>proc~label</title>
+<g id="a_proc~~cluster_number_density~~CallsGraph_node4"><a xlink:href="../proc/label.html" xlink:title="label">
+<polygon fill="#d9534f" stroke="#d9534f" points="266,-66 212,-66 212,-42 266,-42 266,-66"/>
+<text text-anchor="middle" x="239" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">label</text>
+</a>
+</g>
+</g>
+<!-- proc~cluster_number_density&#45;&gt;proc~label -->
+<g id="proc~~cluster_number_density~~CallsGraph_edge8" class="edge">
+<title>proc~cluster_number_density&#45;&gt;proc~label</title>
+<path fill="none" stroke="#000000" d="M139.4207,-66.3373C160.8653,-63.6804 183.6173,-60.8616 201.952,-58.59"/>
+<polygon fill="#000000" stroke="#000000" points="202.4258,-62.0582 211.9196,-57.3551 201.5651,-55.1113 202.4258,-62.0582"/>
 </g>
 <!-- proc~find_spanning_cluster -->
 <g id="proc~~cluster_number_density~~CallsGraph_node5" class="node">
@@ -418,16 +453,16 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
 <g id="proc~~cluster_number_density~~CallsGraph_node6" class="node">
 <title>proc~hoshen_kopelman</title>
 <g id="a_proc~~cluster_number_density~~CallsGraph_node6"><a xlink:href="../proc/hoshen_kopelman.html" xlink:title="hoshen_kopelman">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="449,-108 339,-108 339,-84 449,-84 449,-108"/>
-<text text-anchor="middle" x="394" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hoshen_kopelman</text>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="449,-66 339,-66 339,-42 449,-42 449,-66"/>
+<text text-anchor="middle" x="394" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hoshen_kopelman</text>
 </a>
 </g>
 </g>
 <!-- proc~label&#45;&gt;proc~hoshen_kopelman -->
 <g id="proc~~cluster_number_density~~CallsGraph_edge4" class="edge">
 <title>proc~label&#45;&gt;proc~hoshen_kopelman</title>
-<path fill="none" stroke="#000000" d="M266.3541,-96C283.6853,-96 306.8799,-96 328.7414,-96"/>
-<polygon fill="#000000" stroke="#000000" points="328.9991,-99.5001 338.9991,-96 328.9991,-92.5001 328.9991,-99.5001"/>
+<path fill="none" stroke="#000000" d="M266.3541,-54C283.6853,-54 306.8799,-54 328.7414,-54"/>
+<polygon fill="#000000" stroke="#000000" points="328.9991,-57.5001 338.9991,-54 328.9991,-50.5001 328.9991,-57.5001"/>
 </g>
 <!-- proc~find_intersection -->
 <g id="proc~~cluster_number_density~~CallsGraph_node9" class="node">
@@ -448,37 +483,37 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
 <g id="proc~~cluster_number_density~~CallsGraph_node7" class="node">
 <title>proc~uf_find</title>
 <g id="a_proc~~cluster_number_density~~CallsGraph_node7"><a xlink:href="../proc/uf_find.html" xlink:title="uf_find">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="633,-108 579,-108 579,-84 633,-84 633,-108"/>
-<text text-anchor="middle" x="606" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">uf_find</text>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="633,-66 579,-66 579,-42 633,-42 633,-66"/>
+<text text-anchor="middle" x="606" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">uf_find</text>
 </a>
 </g>
 </g>
 <!-- proc~hoshen_kopelman&#45;&gt;proc~uf_find -->
 <g id="proc~~cluster_number_density~~CallsGraph_edge2" class="edge">
 <title>proc~hoshen_kopelman&#45;&gt;proc~uf_find</title>
-<path fill="none" stroke="#000000" d="M449.1932,-96.7554C477.2793,-97.042 511.9586,-97.2463 543,-97 551.2295,-96.9347 560.0632,-96.8214 568.4351,-96.694"/>
-<polygon fill="#000000" stroke="#000000" points="568.7704,-100.1891 578.7124,-96.5275 568.657,-93.19 568.7704,-100.1891"/>
+<path fill="none" stroke="#000000" d="M449.1932,-54.7554C477.2793,-55.042 511.9586,-55.2463 543,-55 551.2295,-54.9347 560.0632,-54.8214 568.4351,-54.694"/>
+<polygon fill="#000000" stroke="#000000" points="568.7704,-58.1891 578.7124,-54.5275 568.657,-51.19 568.7704,-58.1891"/>
 </g>
 <!-- proc~uf_union -->
 <g id="proc~~cluster_number_density~~CallsGraph_node8" class="node">
 <title>proc~uf_union</title>
 <g id="a_proc~~cluster_number_density~~CallsGraph_node8"><a xlink:href="../proc/uf_union.html" xlink:title="uf_union">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="543,-88 485,-88 485,-64 543,-64 543,-88"/>
-<text text-anchor="middle" x="514" y="-73.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">uf_union</text>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="543,-46 485,-46 485,-22 543,-22 543,-46"/>
+<text text-anchor="middle" x="514" y="-31.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">uf_union</text>
 </a>
 </g>
 </g>
 <!-- proc~hoshen_kopelman&#45;&gt;proc~uf_union -->
 <g id="proc~~cluster_number_density~~CallsGraph_edge3" class="edge">
 <title>proc~hoshen_kopelman&#45;&gt;proc~uf_union</title>
-<path fill="none" stroke="#000000" d="M449.083,-86.8195C457.7474,-85.3754 466.5494,-83.9084 474.7599,-82.54"/>
-<polygon fill="#000000" stroke="#000000" points="475.5,-85.965 484.7886,-80.8686 474.3492,-79.0603 475.5,-85.965"/>
+<path fill="none" stroke="#000000" d="M449.083,-44.8195C457.7474,-43.3754 466.5494,-41.9084 474.7599,-40.54"/>
+<polygon fill="#000000" stroke="#000000" points="475.5,-43.965 484.7886,-38.8686 474.3492,-37.0603 475.5,-43.965"/>
 </g>
 <!-- proc~uf_union&#45;&gt;proc~uf_find -->
 <g id="proc~~cluster_number_density~~CallsGraph_edge1" class="edge">
 <title>proc~uf_union&#45;&gt;proc~uf_find</title>
-<path fill="none" stroke="#000000" d="M543.1094,-82.3281C551.3578,-84.1213 560.4477,-86.0973 569.0916,-87.9764"/>
-<polygon fill="#000000" stroke="#000000" points="568.4413,-91.4167 578.9566,-90.121 569.9284,-84.5765 568.4413,-91.4167"/>
+<path fill="none" stroke="#000000" d="M543.1094,-40.3281C551.3578,-42.1213 560.4477,-44.0973 569.0916,-45.9764"/>
+<polygon fill="#000000" stroke="#000000" points="568.4413,-49.4167 578.9566,-48.121 569.9284,-42.5765 568.4413,-49.4167"/>
 </g>
 </g>
 </svg>
@@ -635,8 +670,6 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
       
       <a class="list-group-item" href="../proc/growcluster.html">growcluster</a>
       
-      <a class="list-group-item" href="../proc/has_spanning_cluster_one_sample.html">has_spanning_cluster_one_sample</a>
-      
       <a class="list-group-item" href="../proc/hoshen_kopelman.html">hoshen_kopelman</a>
       
       <a class="list-group-item" href="../proc/label.html">label</a>
@@ -648,8 +681,6 @@ public subroutine cluster_number_density(p, L, num_samples, bin_mids, results)
       <a class="list-group-item" href="../proc/linspace.html">linspace</a>
       
       <a class="list-group-item" href="../proc/spanning_density.html">spanning_density</a>
-      
-      <a class="list-group-item" href="../proc/spanning_density_one_sample.html">spanning_density_one_sample</a>
       
       <a class="list-group-item" href="../proc/spanning_probability.html">spanning_probability</a>
       

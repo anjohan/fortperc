@@ -56,4 +56,32 @@ module utilities
                 error stop "Problems with least squares"
             endif
         end subroutine
+
+        function find_intersection(array1, array2, num_labels) result(intersect_label)
+            integer, dimension(:), intent(in) :: array1, array2
+            integer :: intersect_label
+            integer, intent(in) :: num_labels
+            integer :: L, i
+            logical, dimension(:), allocatable :: label_found
+
+            L = size(array1)
+
+            allocate(label_found(0:num_labels))
+            !/intersectsnippetstart/!
+            label_found(0:num_labels) = .false.
+
+            do i=1,L
+                label_found(array1(i)) = .true.
+            end do
+
+            do i=1,L
+                if(array2(i) /= 0 .and. label_found(array2(i))) then
+                    intersect_label = array2(i)
+                    return
+                end if
+            end do
+            !/intersectsnippetend/!
+
+            intersect_label = -1
+        end function
 end module

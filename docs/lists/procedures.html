@@ -111,24 +111,47 @@ All Procedures &ndash; fortperc
 			 <thead><tr><th>Procedure</th><th>Location</th><th>Procedure Type</th><th>Description</th></tr></thead>
 			 <tbody>
 			 
-			   <tr><td><a href='../proc/cluster_number_density.html'>cluster_number_density</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/cluster_number_density.html'>cluster_number_density</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Subroutine</td><td><p>Calculate the number density of clusters with different sizes.
+ The cluster number density is defined as
+ \begin{equation}
+      n(s,p) = \sum_{\text{MC-samples}}
+                   \frac{\text{number of clusters with size }s}
+                        {L^2\cdot\text{number of MC-samples}}.
+ \end{equation}
+ Direct calculations will usually give bad results, as there
+ will be very few
+ clusters with large sizes compared to the numbers of clusters
+ with small sizes. This is circumvented by doing logarithmic
+ binning and averaging, i.e.
+ \begin{equation}
+      n\left([s+\Delta s),p\right) = \sum_{\text{MC-samples}}
+                   \frac{\text{number of clusters with size }s
+                         \in[s,s+\Delta s)}
+                        {\Delta s\cdot L^2\cdot\text{number of MC-samples}},
+      \label{eq:nsp}
+ \end{equation}
+ where \(\Delta s\) are logarithmically distributed. After execution,
+ <strong>bin_mids</strong> will contain the centres of the bins.</p></td></tr>
 			 
-			   <tr><td><a href='../proc/create_binary_matrix.html'>create_binary_matrix</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td><p>C</p></td></tr>
+			   <tr><td><a href='../proc/create_binary_matrix.html'>create_binary_matrix</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td><p>Create a random, binary (<code>logical</code>) matrix,
+ which can be used in percolation experiments.</p></td></tr>
 			 
-			   <tr><td><a href='../proc/find_intersection.html'>find_intersection</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/find_intersection.html'>find_intersection</a></td><td><a href='../module/utilities.html'>utilities</a></td><td>Function</td><td></td></tr>
 			 
-			   <tr><td><a href='../proc/find_sizes.html'>find_sizes</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/find_sizes.html'>find_sizes</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td><p>Count the number of sites belonging to each cluster
+ in the labelled matrix.</p></td></tr>
 			 
-			   <tr><td><a href='../proc/find_spanning_cluster.html'>find_spanning_cluster</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/find_spanning_cluster.html'>find_spanning_cluster</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td><p>Find the label of the percolating cluster, i.e. the one spanning from
+ one side of the system to the opposing side.</p></td></tr>
 			 
 			   <tr><td><a href='../proc/growcluster.html'>growcluster</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Subroutine</td><td></td></tr>
-			 
-			   <tr><td><a href='../proc/has_spanning_cluster_one_sample.html'>has_spanning_cluster_one_sample</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td></td></tr>
 			 
 			   <tr><td><a href='../proc/hoshen_kopelman.html'>hoshen_kopelman</a></td><td><a href='../module/hk.html'>hk</a></td><td>Function</td><td><p>Hoshen-Kopelman algorithm for labelling clusters on
  a binary matrix.</p></td></tr>
 			 
-			   <tr><td><a href='../proc/label.html'>label</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/label.html'>label</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Subroutine</td><td><p>Alternative interface to the Hoshen-Kopelman algorithm
+ from the hk module, which uses a binary matrix created
+ by <a href="../proc/create_binary_matrix.html">create_binary_matrix</a>.</p></td></tr>
 			 
 			   <tr><td><a href='../proc/label_stackoverflow.html'>label_stackoverflow</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Subroutine</td><td></td></tr>
 			 
@@ -137,8 +160,6 @@ All Procedures &ndash; fortperc
 			   <tr><td><a href='../proc/linspace.html'>linspace</a></td><td><a href='../module/utilities.html'>utilities</a></td><td>Function</td><td></td></tr>
 			 
 			   <tr><td><a href='../proc/spanning_density.html'>spanning_density</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td></td></tr>
-			 
-			   <tr><td><a href='../proc/spanning_density_one_sample.html'>spanning_density_one_sample</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td></td></tr>
 			 
 			   <tr><td><a href='../proc/spanning_probability.html'>spanning_probability</a></td><td><a href='../module/percolation.html'>percolation</a></td><td>Function</td><td></td></tr>
 			 
@@ -161,323 +182,251 @@ All Procedures &ndash; fortperc
 <!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: call~~graph~~CallGraph Pages: 1 -->
-<svg id="callgraphCallGraph" width="855pt" height="229pt"
- viewBox="0.00 0.00 855.00 228.64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="call~~graph~~CallGraph" class="graph" transform="scale(.8051 .8051) rotate(0) translate(4 280)">
+<svg id="callgraphCallGraph" width="670pt" height="430pt"
+ viewBox="0.00 0.00 670.00 430.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="call~~graph~~CallGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 426)">
 <title>call~~graph~~CallGraph</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-280 1058,-280 1058,4 -4,4"/>
-<!-- proc~label_stackoverflow -->
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-426 666,-426 666,4 -4,4"/>
+<!-- proc~create_binary_matrix -->
 <g id="call~~graph~~CallGraph_node1" class="node">
-<title>proc~label_stackoverflow</title>
-<g id="a_call~~graph~~CallGraph_node1"><a xlink:href="../proc/label_stackoverflow.html" xlink:title="label_stackoverflow">
-<polygon fill="#d9534f" stroke="#d9534f" points="143,-48 25,-48 25,-24 143,-24 143,-48"/>
-<text text-anchor="middle" x="84" y="-33.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">label_stackoverflow</text>
+<title>proc~create_binary_matrix</title>
+<g id="a_call~~graph~~CallGraph_node1"><a xlink:href="../proc/create_binary_matrix.html" xlink:title="create_binary_matrix">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-170 205,-170 205,-146 331,-146 331,-170"/>
+<text text-anchor="middle" x="268" y="-155.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">create_binary_matrix</text>
 </a>
 </g>
 </g>
-<!-- proc~growcluster -->
-<g id="call~~graph~~CallGraph_node8" class="node">
-<title>proc~growcluster</title>
-<g id="a_call~~graph~~CallGraph_node8"><a xlink:href="../proc/growcluster.html" xlink:title="growcluster">
-<polygon fill="#d9534f" stroke="#d9534f" points="303.5,-48 228.5,-48 228.5,-24 303.5,-24 303.5,-48"/>
-<text text-anchor="middle" x="266" y="-33.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">growcluster</text>
+<!-- proc~spanning_probability_inverse -->
+<g id="call~~graph~~CallGraph_node2" class="node">
+<title>proc~spanning_probability_inverse</title>
+<g id="a_call~~graph~~CallGraph_node2"><a xlink:href="../proc/spanning_probability_inverse.html" xlink:title="spanning_probability_inverse">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="168,-212 0,-212 0,-188 168,-188 168,-212"/>
+<text text-anchor="middle" x="84" y="-197.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">spanning_probability_inverse</text>
 </a>
 </g>
 </g>
-<!-- proc~label_stackoverflow&#45;&gt;proc~growcluster -->
+<!-- proc~spanning_probability -->
+<g id="call~~graph~~CallGraph_node9" class="node">
+<title>proc~spanning_probability</title>
+<g id="a_call~~graph~~CallGraph_node9"><a xlink:href="../proc/spanning_probability.html" xlink:title="spanning_probability">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="330,-212 206,-212 206,-188 330,-188 330,-212"/>
+<text text-anchor="middle" x="268" y="-197.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">spanning_probability</text>
+</a>
+</g>
+</g>
+<!-- proc~spanning_probability_inverse&#45;&gt;proc~spanning_probability -->
 <g id="call~~graph~~CallGraph_edge1" class="edge">
-<title>proc~label_stackoverflow&#45;&gt;proc~growcluster</title>
-<path fill="none" stroke="#000000" d="M143.0902,-36C167.3927,-36 195.1718,-36 218.1655,-36"/>
-<polygon fill="#000000" stroke="#000000" points="218.3637,-39.5001 228.3637,-36 218.3636,-32.5001 218.3637,-39.5001"/>
+<title>proc~spanning_probability_inverse&#45;&gt;proc~spanning_probability</title>
+<path fill="none" stroke="#000000" d="M168.192,-200C177.4049,-200 186.723,-200 195.7731,-200"/>
+<polygon fill="#000000" stroke="#000000" points="195.8574,-203.5001 205.8573,-200 195.8573,-196.5001 195.8574,-203.5001"/>
 </g>
 <!-- proc~find_spanning_cluster -->
-<g id="call~~graph~~CallGraph_node2" class="node">
+<g id="call~~graph~~CallGraph_node3" class="node">
 <title>proc~find_spanning_cluster</title>
-<g id="a_call~~graph~~CallGraph_node2"><a xlink:href="../proc/find_spanning_cluster.html" xlink:title="find_spanning_cluster">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="724,-66 596,-66 596,-42 724,-42 724,-66"/>
-<text text-anchor="middle" x="660" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">find_spanning_cluster</text>
+<g id="a_call~~graph~~CallGraph_node3"><a xlink:href="../proc/find_spanning_cluster.html" xlink:title="find_spanning_cluster">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="332,-128 204,-128 204,-104 332,-104 332,-128"/>
+<text text-anchor="middle" x="268" y="-113.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">find_spanning_cluster</text>
 </a>
 </g>
 </g>
 <!-- proc~find_intersection -->
-<g id="call~~graph~~CallGraph_node19" class="node">
+<g id="call~~graph~~CallGraph_node12" class="node">
 <title>proc~find_intersection</title>
-<g id="a_call~~graph~~CallGraph_node19"><a xlink:href="../proc/find_intersection.html" xlink:title="find_intersection">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="865.5,-66 764.5,-66 764.5,-42 865.5,-42 865.5,-66"/>
-<text text-anchor="middle" x="815" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">find_intersection</text>
+<g id="a_call~~graph~~CallGraph_node12"><a xlink:href="../proc/find_intersection.html" xlink:title="find_intersection">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="473.5,-128 372.5,-128 372.5,-104 473.5,-104 473.5,-128"/>
+<text text-anchor="middle" x="423" y="-113.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">find_intersection</text>
 </a>
 </g>
 </g>
 <!-- proc~find_spanning_cluster&#45;&gt;proc~find_intersection -->
 <g id="call~~graph~~CallGraph_edge2" class="edge">
 <title>proc~find_spanning_cluster&#45;&gt;proc~find_intersection</title>
-<path fill="none" stroke="#000000" d="M724.3874,-54C734.2645,-54 744.4343,-54 754.2297,-54"/>
-<polygon fill="#000000" stroke="#000000" points="754.2741,-57.5001 764.274,-54 754.274,-50.5001 754.2741,-57.5001"/>
-</g>
-<!-- proc~create_binary_matrix -->
-<g id="call~~graph~~CallGraph_node3" class="node">
-<title>proc~create_binary_matrix</title>
-<g id="a_call~~graph~~CallGraph_node3"><a xlink:href="../proc/create_binary_matrix.html" xlink:title="create_binary_matrix">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="723,-108 597,-108 597,-84 723,-84 723,-108"/>
-<text text-anchor="middle" x="660" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">create_binary_matrix</text>
-</a>
-</g>
+<path fill="none" stroke="#000000" d="M332.3874,-116C342.2645,-116 352.4343,-116 362.2297,-116"/>
+<polygon fill="#000000" stroke="#000000" points="362.2741,-119.5001 372.274,-116 362.274,-112.5001 362.2741,-119.5001"/>
 </g>
 <!-- proc~find_sizes -->
 <g id="call~~graph~~CallGraph_node4" class="node">
 <title>proc~find_sizes</title>
 <g id="a_call~~graph~~CallGraph_node4"><a xlink:href="../proc/find_sizes.html" xlink:title="find_sizes">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="692,-24 628,-24 628,0 692,0 692,-24"/>
-<text text-anchor="middle" x="660" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">find_sizes</text>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="300,-86 236,-86 236,-62 300,-62 300,-86"/>
+<text text-anchor="middle" x="268" y="-71.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">find_sizes</text>
 </a>
 </g>
 </g>
-<!-- proc~spanning_density_one_sample -->
+<!-- proc~label_stackoverflow -->
 <g id="call~~graph~~CallGraph_node5" class="node">
-<title>proc~spanning_density_one_sample</title>
-<g id="a_call~~graph~~CallGraph_node5"><a xlink:href="../proc/spanning_density_one_sample.html" xlink:title="spanning_density_one_sample">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="549.5,-108 374.5,-108 374.5,-84 549.5,-84 549.5,-108"/>
-<text text-anchor="middle" x="462" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">spanning_density_one_sample</text>
+<title>proc~label_stackoverflow</title>
+<g id="a_call~~graph~~CallGraph_node5"><a xlink:href="../proc/label_stackoverflow.html" xlink:title="label_stackoverflow">
+<polygon fill="#d9534f" stroke="#d9534f" points="143,-254 25,-254 25,-230 143,-230 143,-254"/>
+<text text-anchor="middle" x="84" y="-239.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">label_stackoverflow</text>
 </a>
 </g>
 </g>
-<!-- proc~spanning_density_one_sample&#45;&gt;proc~find_spanning_cluster -->
-<g id="call~~graph~~CallGraph_edge5" class="edge">
-<title>proc~spanning_density_one_sample&#45;&gt;proc~find_spanning_cluster</title>
-<path fill="none" stroke="#000000" d="M518.7389,-83.9645C542.0402,-79.0218 569.1867,-73.2634 593.42,-68.123"/>
-<polygon fill="#000000" stroke="#000000" points="594.1968,-71.5362 603.2529,-66.0373 592.7442,-64.6886 594.1968,-71.5362"/>
-</g>
-<!-- proc~spanning_density_one_sample&#45;&gt;proc~create_binary_matrix -->
-<g id="call~~graph~~CallGraph_edge4" class="edge">
-<title>proc~spanning_density_one_sample&#45;&gt;proc~create_binary_matrix</title>
-<path fill="none" stroke="#000000" d="M549.7104,-96C561.9511,-96 574.425,-96 586.3706,-96"/>
-<polygon fill="#000000" stroke="#000000" points="586.713,-99.5001 596.713,-96 586.7129,-92.5001 586.713,-99.5001"/>
-</g>
-<!-- proc~label -->
-<g id="call~~graph~~CallGraph_node14" class="node">
-<title>proc~label</title>
-<g id="a_call~~graph~~CallGraph_node14"><a xlink:href="../proc/label.html" xlink:title="label">
-<polygon fill="#d9534f" stroke="#d9534f" points="687,-150 633,-150 633,-126 687,-126 687,-150"/>
-<text text-anchor="middle" x="660" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">label</text>
-</a>
-</g>
-</g>
-<!-- proc~spanning_density_one_sample&#45;&gt;proc~label -->
-<g id="call~~graph~~CallGraph_edge3" class="edge">
-<title>proc~spanning_density_one_sample&#45;&gt;proc~label</title>
-<path fill="none" stroke="#000000" d="M518.7389,-108.0355C552.2678,-115.1477 593.7583,-123.9487 623.0747,-130.1674"/>
-<polygon fill="#000000" stroke="#000000" points="622.3949,-133.601 632.9035,-132.2523 623.8475,-126.7533 622.3949,-133.601"/>
-</g>
-<!-- proc~linspace -->
-<g id="call~~graph~~CallGraph_node6" class="node">
-<title>proc~linspace</title>
-<g id="a_call~~graph~~CallGraph_node6"><a xlink:href="../proc/linspace.html" xlink:title="linspace">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="112.5,-192 55.5,-192 55.5,-168 112.5,-168 112.5,-192"/>
-<text text-anchor="middle" x="84" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">linspace</text>
-</a>
-</g>
-</g>
-<!-- proc~spanning_probability_inverse -->
-<g id="call~~graph~~CallGraph_node7" class="node">
-<title>proc~spanning_probability_inverse</title>
-<g id="a_call~~graph~~CallGraph_node7"><a xlink:href="../proc/spanning_probability_inverse.html" xlink:title="spanning_probability_inverse">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="168,-150 0,-150 0,-126 168,-126 168,-150"/>
-<text text-anchor="middle" x="84" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">spanning_probability_inverse</text>
-</a>
-</g>
-</g>
-<!-- proc~spanning_probability -->
-<g id="call~~graph~~CallGraph_node12" class="node">
-<title>proc~spanning_probability</title>
-<g id="a_call~~graph~~CallGraph_node12"><a xlink:href="../proc/spanning_probability.html" xlink:title="spanning_probability">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-150 204,-150 204,-126 328,-126 328,-150"/>
-<text text-anchor="middle" x="266" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">spanning_probability</text>
-</a>
-</g>
-</g>
-<!-- proc~spanning_probability_inverse&#45;&gt;proc~spanning_probability -->
-<g id="call~~graph~~CallGraph_edge6" class="edge">
-<title>proc~spanning_probability_inverse&#45;&gt;proc~spanning_probability</title>
-<path fill="none" stroke="#000000" d="M168.0743,-138C176.6162,-138 185.2399,-138 193.6421,-138"/>
-<polygon fill="#000000" stroke="#000000" points="193.7607,-141.5001 203.7607,-138 193.7607,-134.5001 193.7607,-141.5001"/>
-</g>
-<!-- proc~growcluster&#45;&gt;proc~growcluster -->
-<g id="call~~graph~~CallGraph_edge7" class="edge">
-<title>proc~growcluster&#45;&gt;proc~growcluster</title>
-<path fill="none" stroke="#000000" d="M235.9073,-48.0139C225.3988,-56.9717 235.4297,-66 266,-66 285.1064,-66 296.1897,-62.4733 299.2497,-57.6413"/>
-<polygon fill="#000000" stroke="#000000" points="302.5344,-56.4254 296.0927,-48.0139 295.8829,-58.6067 302.5344,-56.4254"/>
-</g>
-<!-- proc~linfit -->
-<g id="call~~graph~~CallGraph_node9" class="node">
-<title>proc~linfit</title>
-<g id="a_call~~graph~~CallGraph_node9"><a xlink:href="../proc/linfit.html" xlink:title="linfit">
-<polygon fill="#d9534f" stroke="#d9534f" points="111,-234 57,-234 57,-210 111,-210 111,-234"/>
-<text text-anchor="middle" x="84" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">linfit</text>
-</a>
-</g>
-</g>
-<!-- dgels -->
-<g id="call~~graph~~CallGraph_node20" class="node">
-<title>dgels</title>
-<polygon fill="#777777" stroke="#777777" points="293,-234 239,-234 239,-210 293,-210 293,-234"/>
-<text text-anchor="middle" x="266" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">dgels</text>
-</g>
-<!-- proc~linfit&#45;&gt;dgels -->
-<g id="call~~graph~~CallGraph_edge8" class="edge">
-<title>proc~linfit&#45;&gt;dgels</title>
-<path fill="none" stroke="#000000" d="M111.2472,-222C142.4312,-222 193.6875,-222 228.5957,-222"/>
-<polygon fill="#000000" stroke="#000000" points="228.8642,-225.5001 238.8641,-222 228.8641,-218.5001 228.8642,-225.5001"/>
-</g>
-<!-- proc~has_spanning_cluster_one_sample -->
-<g id="call~~graph~~CallGraph_node10" class="node">
-<title>proc~has_spanning_cluster_one_sample</title>
-<g id="a_call~~graph~~CallGraph_node10"><a xlink:href="../proc/has_spanning_cluster_one_sample.html" xlink:title="has_spanning_cluster_one_sample">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="560,-150 364,-150 364,-126 560,-126 560,-150"/>
-<text text-anchor="middle" x="462" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">has_spanning_cluster_one_sample</text>
-</a>
-</g>
-</g>
-<!-- proc~has_spanning_cluster_one_sample&#45;&gt;proc~find_spanning_cluster -->
-<g id="call~~graph~~CallGraph_edge11" class="edge">
-<title>proc~has_spanning_cluster_one_sample&#45;&gt;proc~find_spanning_cluster</title>
-<path fill="none" stroke="#000000" d="M540.7945,-125.9774C547.5133,-123.5173 554.0183,-120.5583 560,-117 581.1296,-104.4308 575.5657,-88.6705 596,-75 598.5423,-73.2992 601.2331,-71.7268 604.0157,-70.2742"/>
-<polygon fill="#000000" stroke="#000000" points="605.551,-73.4203 613.1451,-66.0325 602.6014,-67.072 605.551,-73.4203"/>
-</g>
-<!-- proc~has_spanning_cluster_one_sample&#45;&gt;proc~create_binary_matrix -->
-<g id="call~~graph~~CallGraph_edge10" class="edge">
-<title>proc~has_spanning_cluster_one_sample&#45;&gt;proc~create_binary_matrix</title>
-<path fill="none" stroke="#000000" d="M518.7389,-125.9645C542.0402,-121.0218 569.1867,-115.2634 593.42,-110.123"/>
-<polygon fill="#000000" stroke="#000000" points="594.1968,-113.5362 603.2529,-108.0373 592.7442,-106.6886 594.1968,-113.5362"/>
-</g>
-<!-- proc~has_spanning_cluster_one_sample&#45;&gt;proc~label -->
-<g id="call~~graph~~CallGraph_edge9" class="edge">
-<title>proc~has_spanning_cluster_one_sample&#45;&gt;proc~label</title>
-<path fill="none" stroke="#000000" d="M560.1299,-138C582.299,-138 604.5262,-138 622.3646,-138"/>
-<polygon fill="#000000" stroke="#000000" points="622.5949,-141.5001 632.5949,-138 622.5949,-134.5001 622.5949,-141.5001"/>
-</g>
-<!-- proc~stringfromint -->
+<!-- proc~growcluster -->
 <g id="call~~graph~~CallGraph_node11" class="node">
-<title>proc~stringfromint</title>
-<g id="a_call~~graph~~CallGraph_node11"><a xlink:href="../proc/stringfromint.html" xlink:title="stringfromint">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="125,-276 43,-276 43,-252 125,-252 125,-276"/>
-<text text-anchor="middle" x="84" y="-261.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">stringfromint</text>
+<title>proc~growcluster</title>
+<g id="a_call~~graph~~CallGraph_node11"><a xlink:href="../proc/growcluster.html" xlink:title="growcluster">
+<polygon fill="#d9534f" stroke="#d9534f" points="305.5,-254 230.5,-254 230.5,-230 305.5,-230 305.5,-254"/>
+<text text-anchor="middle" x="268" y="-239.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">growcluster</text>
 </a>
 </g>
 </g>
-<!-- proc~spanning_probability&#45;&gt;proc~has_spanning_cluster_one_sample -->
-<g id="call~~graph~~CallGraph_edge12" class="edge">
-<title>proc~spanning_probability&#45;&gt;proc~has_spanning_cluster_one_sample</title>
-<path fill="none" stroke="#000000" d="M328.0156,-138C336.2378,-138 344.8524,-138 353.5784,-138"/>
-<polygon fill="#000000" stroke="#000000" points="353.8565,-141.5001 363.8564,-138 353.8564,-134.5001 353.8565,-141.5001"/>
+<!-- proc~label_stackoverflow&#45;&gt;proc~growcluster -->
+<g id="call~~graph~~CallGraph_edge3" class="edge">
+<title>proc~label_stackoverflow&#45;&gt;proc~growcluster</title>
+<path fill="none" stroke="#000000" d="M143.2316,-242C168.1235,-242 196.6967,-242 220.2134,-242"/>
+<polygon fill="#000000" stroke="#000000" points="220.2931,-245.5001 230.293,-242 220.293,-238.5001 220.2931,-245.5001"/>
 </g>
 <!-- proc~uf_find -->
-<g id="call~~graph~~CallGraph_node13" class="node">
+<g id="call~~graph~~CallGraph_node6" class="node">
 <title>proc~uf_find</title>
-<g id="a_call~~graph~~CallGraph_node13"><a xlink:href="../proc/uf_find.html" xlink:title="uf_find">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="1054,-150 1000,-150 1000,-126 1054,-126 1054,-150"/>
-<text text-anchor="middle" x="1027" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">uf_find</text>
+<g id="a_call~~graph~~CallGraph_node6"><a xlink:href="../proc/uf_find.html" xlink:title="uf_find">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="662,-44 608,-44 608,-20 662,-20 662,-44"/>
+<text text-anchor="middle" x="635" y="-29.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">uf_find</text>
 </a>
 </g>
 </g>
-<!-- proc~hoshen_kopelman -->
-<g id="call~~graph~~CallGraph_node17" class="node">
-<title>proc~hoshen_kopelman</title>
-<g id="a_call~~graph~~CallGraph_node17"><a xlink:href="../proc/hoshen_kopelman.html" xlink:title="hoshen_kopelman">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="870,-150 760,-150 760,-126 870,-126 870,-150"/>
-<text text-anchor="middle" x="815" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hoshen_kopelman</text>
+<!-- proc~linspace -->
+<g id="call~~graph~~CallGraph_node7" class="node">
+<title>proc~linspace</title>
+<g id="a_call~~graph~~CallGraph_node7"><a xlink:href="../proc/linspace.html" xlink:title="linspace">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="112.5,-296 55.5,-296 55.5,-272 112.5,-272 112.5,-296"/>
+<text text-anchor="middle" x="84" y="-281.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">linspace</text>
 </a>
 </g>
-</g>
-<!-- proc~label&#45;&gt;proc~hoshen_kopelman -->
-<g id="call~~graph~~CallGraph_edge13" class="edge">
-<title>proc~label&#45;&gt;proc~hoshen_kopelman</title>
-<path fill="none" stroke="#000000" d="M687.3541,-138C704.6853,-138 727.8799,-138 749.7414,-138"/>
-<polygon fill="#000000" stroke="#000000" points="749.9991,-141.5001 759.9991,-138 749.9991,-134.5001 749.9991,-141.5001"/>
 </g>
 <!-- proc~uf_union -->
-<g id="call~~graph~~CallGraph_node15" class="node">
+<g id="call~~graph~~CallGraph_node8" class="node">
 <title>proc~uf_union</title>
-<g id="a_call~~graph~~CallGraph_node15"><a xlink:href="../proc/uf_union.html" xlink:title="uf_union">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="964,-170 906,-170 906,-146 964,-146 964,-170"/>
-<text text-anchor="middle" x="935" y="-155.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">uf_union</text>
+<g id="a_call~~graph~~CallGraph_node8"><a xlink:href="../proc/uf_union.html" xlink:title="uf_union">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="572,-24 514,-24 514,0 572,0 572,-24"/>
+<text text-anchor="middle" x="543" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">uf_union</text>
 </a>
 </g>
 </g>
 <!-- proc~uf_union&#45;&gt;proc~uf_find -->
-<g id="call~~graph~~CallGraph_edge14" class="edge">
+<g id="call~~graph~~CallGraph_edge4" class="edge">
 <title>proc~uf_union&#45;&gt;proc~uf_find</title>
-<path fill="none" stroke="#000000" d="M964.1094,-151.6719C972.3578,-149.8787 981.4477,-147.9027 990.0916,-146.0236"/>
-<polygon fill="#000000" stroke="#000000" points="990.9284,-149.4235 999.9566,-143.879 989.4413,-142.5833 990.9284,-149.4235"/>
+<path fill="none" stroke="#000000" d="M572.1094,-18.3281C580.3578,-20.1213 589.4477,-22.0973 598.0916,-23.9764"/>
+<polygon fill="#000000" stroke="#000000" points="597.4413,-27.4167 607.9566,-26.121 598.9284,-20.5765 597.4413,-27.4167"/>
 </g>
-<!-- proc~cluster_number_density -->
-<g id="call~~graph~~CallGraph_node16" class="node">
-<title>proc~cluster_number_density</title>
-<g id="a_call~~graph~~CallGraph_node16"><a xlink:href="../proc/cluster_number_density.html" xlink:title="cluster_number_density">
-<polygon fill="#d9534f" stroke="#d9534f" points="531.5,-66 392.5,-66 392.5,-42 531.5,-42 531.5,-66"/>
-<text text-anchor="middle" x="462" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">cluster_number_density</text>
+<!-- proc~stringfromint -->
+<g id="call~~graph~~CallGraph_node10" class="node">
+<title>proc~stringfromint</title>
+<g id="a_call~~graph~~CallGraph_node10"><a xlink:href="../proc/stringfromint.html" xlink:title="stringfromint">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="125,-338 43,-338 43,-314 125,-314 125,-338"/>
+<text text-anchor="middle" x="84" y="-323.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">stringfromint</text>
 </a>
 </g>
 </g>
-<!-- proc~cluster_number_density&#45;&gt;proc~find_spanning_cluster -->
-<g id="call~~graph~~CallGraph_edge18" class="edge">
-<title>proc~cluster_number_density&#45;&gt;proc~find_spanning_cluster</title>
-<path fill="none" stroke="#000000" d="M531.529,-54C549.0408,-54 567.9062,-54 585.6444,-54"/>
-<polygon fill="#000000" stroke="#000000" points="585.9394,-57.5001 595.9394,-54 585.9394,-50.5001 585.9394,-57.5001"/>
+<!-- proc~growcluster&#45;&gt;proc~growcluster -->
+<g id="call~~graph~~CallGraph_edge5" class="edge">
+<title>proc~growcluster&#45;&gt;proc~growcluster</title>
+<path fill="none" stroke="#000000" d="M242.537,-254.0139C233.6451,-262.9717 242.1328,-272 268,-272 283.7628,-272 293.072,-268.6474 295.9274,-264.0013"/>
+<polygon fill="#000000" stroke="#000000" points="299.2568,-262.8842 293.463,-254.0139 292.4607,-264.5612 299.2568,-262.8842"/>
 </g>
-<!-- proc~cluster_number_density&#45;&gt;proc~create_binary_matrix -->
-<g id="call~~graph~~CallGraph_edge17" class="edge">
-<title>proc~cluster_number_density&#45;&gt;proc~create_binary_matrix</title>
-<path fill="none" stroke="#000000" d="M518.7389,-66.0355C542.0402,-70.9782 569.1867,-76.7366 593.42,-81.877"/>
-<polygon fill="#000000" stroke="#000000" points="592.7442,-85.3114 603.2529,-83.9627 594.1968,-78.4638 592.7442,-85.3114"/>
+<!-- proc~linfit -->
+<g id="call~~graph~~CallGraph_node13" class="node">
+<title>proc~linfit</title>
+<g id="a_call~~graph~~CallGraph_node13"><a xlink:href="../proc/linfit.html" xlink:title="linfit">
+<polygon fill="#d9534f" stroke="#d9534f" points="111,-380 57,-380 57,-356 111,-356 111,-380"/>
+<text text-anchor="middle" x="84" y="-365.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">linfit</text>
+</a>
 </g>
-<!-- proc~cluster_number_density&#45;&gt;proc~find_sizes -->
-<g id="call~~graph~~CallGraph_edge15" class="edge">
-<title>proc~cluster_number_density&#45;&gt;proc~find_sizes</title>
-<path fill="none" stroke="#000000" d="M518.7389,-41.9645C550.4277,-35.2426 589.2284,-27.0122 618.1415,-20.8791"/>
-<polygon fill="#000000" stroke="#000000" points="618.8722,-24.302 627.9282,-18.8031 617.4196,-17.4544 618.8722,-24.302"/>
 </g>
-<!-- proc~cluster_number_density&#45;&gt;proc~label -->
-<g id="call~~graph~~CallGraph_edge16" class="edge">
-<title>proc~cluster_number_density&#45;&gt;proc~label</title>
-<path fill="none" stroke="#000000" d="M531.6226,-62.9953C541.5528,-65.9409 551.3265,-69.8405 560,-75 581.1296,-87.5692 575.5657,-103.3295 596,-117 604.2236,-122.5016 614.0023,-126.6604 623.4098,-129.7632"/>
-<polygon fill="#000000" stroke="#000000" points="622.415,-133.1188 632.9984,-132.6263 624.4179,-126.4114 622.415,-133.1188"/>
+<!-- dgels -->
+<g id="call~~graph~~CallGraph_node18" class="node">
+<title>dgels</title>
+<polygon fill="#777777" stroke="#777777" points="295,-380 241,-380 241,-356 295,-356 295,-380"/>
+<text text-anchor="middle" x="268" y="-365.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">dgels</text>
+</g>
+<!-- proc~linfit&#45;&gt;dgels -->
+<g id="call~~graph~~CallGraph_edge6" class="edge">
+<title>proc~linfit&#45;&gt;dgels</title>
+<path fill="none" stroke="#000000" d="M111.1498,-368C142.6767,-368 194.8759,-368 230.3187,-368"/>
+<polygon fill="#000000" stroke="#000000" points="230.7388,-371.5001 240.7388,-368 230.7387,-364.5001 230.7388,-371.5001"/>
+</g>
+<!-- proc~hoshen_kopelman -->
+<g id="call~~graph~~CallGraph_node14" class="node">
+<title>proc~hoshen_kopelman</title>
+<g id="a_call~~graph~~CallGraph_node14"><a xlink:href="../proc/hoshen_kopelman.html" xlink:title="hoshen_kopelman">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="478,-44 368,-44 368,-20 478,-20 478,-44"/>
+<text text-anchor="middle" x="423" y="-29.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hoshen_kopelman</text>
+</a>
+</g>
 </g>
 <!-- proc~hoshen_kopelman&#45;&gt;proc~uf_find -->
-<g id="call~~graph~~CallGraph_edge19" class="edge">
+<g id="call~~graph~~CallGraph_edge7" class="edge">
 <title>proc~hoshen_kopelman&#45;&gt;proc~uf_find</title>
-<path fill="none" stroke="#000000" d="M870.1932,-137.2446C898.2793,-136.958 932.9586,-136.7537 964,-137 972.2295,-137.0653 981.0632,-137.1786 989.4351,-137.306"/>
-<polygon fill="#000000" stroke="#000000" points="989.657,-140.81 999.7124,-137.4725 989.7704,-133.8109 989.657,-140.81"/>
+<path fill="none" stroke="#000000" d="M478.1932,-32.7554C506.2793,-33.042 540.9586,-33.2463 572,-33 580.2295,-32.9347 589.0632,-32.8214 597.4351,-32.694"/>
+<polygon fill="#000000" stroke="#000000" points="597.7704,-36.1891 607.7124,-32.5275 597.657,-29.19 597.7704,-36.1891"/>
 </g>
 <!-- proc~hoshen_kopelman&#45;&gt;proc~uf_union -->
-<g id="call~~graph~~CallGraph_edge20" class="edge">
+<g id="call~~graph~~CallGraph_edge8" class="edge">
 <title>proc~hoshen_kopelman&#45;&gt;proc~uf_union</title>
-<path fill="none" stroke="#000000" d="M870.083,-147.1805C878.7474,-148.6246 887.5494,-150.0916 895.7599,-151.46"/>
-<polygon fill="#000000" stroke="#000000" points="895.3492,-154.9397 905.7886,-153.1314 896.5,-148.035 895.3492,-154.9397"/>
+<path fill="none" stroke="#000000" d="M478.083,-22.8195C486.7474,-21.3754 495.5494,-19.9084 503.7599,-18.54"/>
+<polygon fill="#000000" stroke="#000000" points="504.5,-21.965 513.7886,-16.8686 503.3492,-15.0603 504.5,-21.965"/>
 </g>
-<!-- proc~spanning_density -->
-<g id="call~~graph~~CallGraph_node18" class="node">
-<title>proc~spanning_density</title>
-<g id="a_call~~graph~~CallGraph_node18"><a xlink:href="../proc/spanning_density.html" xlink:title="spanning_density">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="318.5,-108 213.5,-108 213.5,-84 318.5,-84 318.5,-108"/>
-<text text-anchor="middle" x="266" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">spanning_density</text>
+<!-- proc~cluster_number_density -->
+<g id="call~~graph~~CallGraph_node15" class="node">
+<title>proc~cluster_number_density</title>
+<g id="a_call~~graph~~CallGraph_node15"><a xlink:href="../proc/cluster_number_density.html" xlink:title="cluster_number_density">
+<polygon fill="#d9534f" stroke="#d9534f" points="153.5,-107 14.5,-107 14.5,-83 153.5,-83 153.5,-107"/>
+<text text-anchor="middle" x="84" y="-92.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">cluster_number_density</text>
 </a>
 </g>
 </g>
-<!-- proc~spanning_density&#45;&gt;proc~spanning_density_one_sample -->
-<g id="call~~graph~~CallGraph_edge21" class="edge">
-<title>proc~spanning_density&#45;&gt;proc~spanning_density_one_sample</title>
-<path fill="none" stroke="#000000" d="M318.5244,-96C332.5702,-96 348.2173,-96 363.8689,-96"/>
-<polygon fill="#000000" stroke="#000000" points="364.1381,-99.5001 374.1381,-96 364.1381,-92.5001 364.1381,-99.5001"/>
+<!-- proc~cluster_number_density&#45;&gt;proc~create_binary_matrix -->
+<g id="call~~graph~~CallGraph_edge10" class="edge">
+<title>proc~cluster_number_density&#45;&gt;proc~create_binary_matrix</title>
+<path fill="none" stroke="#000000" d="M117.8185,-107.0353C141.8263,-115.5304 174.8391,-127.1137 204,-137 209.5339,-138.8762 215.3459,-140.82 221.1165,-142.7336"/>
+<polygon fill="#000000" stroke="#000000" points="220.1394,-146.0967 230.7326,-145.9082 222.3339,-139.4496 220.1394,-146.0967"/>
+</g>
+<!-- proc~cluster_number_density&#45;&gt;proc~find_spanning_cluster -->
+<g id="call~~graph~~CallGraph_edge12" class="edge">
+<title>proc~cluster_number_density&#45;&gt;proc~find_spanning_cluster</title>
+<path fill="none" stroke="#000000" d="M153.5625,-102.9392C166.7002,-104.4386 180.488,-106.0122 193.7629,-107.5273"/>
+<polygon fill="#000000" stroke="#000000" points="193.4627,-111.0157 203.7951,-108.6723 194.2565,-104.0608 193.4627,-111.0157"/>
+</g>
+<!-- proc~cluster_number_density&#45;&gt;proc~find_sizes -->
+<g id="call~~graph~~CallGraph_edge9" class="edge">
+<title>proc~cluster_number_density&#45;&gt;proc~find_sizes</title>
+<path fill="none" stroke="#000000" d="M153.5625,-87.0608C177.8757,-84.2859 204.4154,-81.2569 225.8102,-78.8151"/>
+<polygon fill="#000000" stroke="#000000" points="226.3289,-82.2788 235.8675,-77.6673 225.535,-75.3239 226.3289,-82.2788"/>
+</g>
+<!-- proc~label -->
+<g id="call~~graph~~CallGraph_node16" class="node">
+<title>proc~label</title>
+<g id="a_call~~graph~~CallGraph_node16"><a xlink:href="../proc/label.html" xlink:title="label">
+<polygon fill="#d9534f" stroke="#d9534f" points="295,-44 241,-44 241,-20 295,-20 295,-44"/>
+<text text-anchor="middle" x="268" y="-29.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">label</text>
+</a>
+</g>
+</g>
+<!-- proc~cluster_number_density&#45;&gt;proc~label -->
+<g id="call~~graph~~CallGraph_edge11" class="edge">
+<title>proc~cluster_number_density&#45;&gt;proc~label</title>
+<path fill="none" stroke="#000000" d="M117.8185,-82.9647C141.8263,-74.4696 174.8391,-62.8863 204,-53 212.7707,-50.0265 222.2398,-46.883 231.1358,-43.9593"/>
+<polygon fill="#000000" stroke="#000000" points="232.4539,-47.2106 240.8683,-40.7724 230.2756,-40.5581 232.4539,-47.2106"/>
+</g>
+<!-- proc~label&#45;&gt;proc~hoshen_kopelman -->
+<g id="call~~graph~~CallGraph_edge13" class="edge">
+<title>proc~label&#45;&gt;proc~hoshen_kopelman</title>
+<path fill="none" stroke="#000000" d="M295.3541,-32C312.6853,-32 335.8799,-32 357.7414,-32"/>
+<polygon fill="#000000" stroke="#000000" points="357.9991,-35.5001 367.9991,-32 357.9991,-28.5001 357.9991,-35.5001"/>
+</g>
+<!-- proc~spanning_density -->
+<g id="call~~graph~~CallGraph_node17" class="node">
+<title>proc~spanning_density</title>
+<g id="a_call~~graph~~CallGraph_node17"><a xlink:href="../proc/spanning_density.html" xlink:title="spanning_density">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="136.5,-422 31.5,-422 31.5,-398 136.5,-398 136.5,-422"/>
+<text text-anchor="middle" x="84" y="-407.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">spanning_density</text>
+</a>
+</g>
 </g>
 </g>
 </svg>
 </div>
-                <script>var pancallgraphCallGraph = svgPanZoom('#callgraphCallGraph', {
-                    zoomEnabled: true,
-                    controlIconsEnabled: true,
-                    fit: true,
-                    center: true,});
-                    </script>
                 <div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div>
                 <div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-lg" role="document">

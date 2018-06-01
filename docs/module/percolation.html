@@ -122,7 +122,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
 	  data-placement="bottom" data-html="true"
-	  title="65.6% of total for modules and submodules.">240 statements</a>
+	  title="60.9% of total for modules and submodules.">227 statements</a>
      </li> 
      
      
@@ -185,13 +185,7 @@
       
       <a class="list-group-item" href="../module/percolation.html#proc-find_spanning_cluster">find_spanning_cluster</a>
       
-      <a class="list-group-item" href="../module/percolation.html#proc-find_intersection">find_intersection</a>
-      
-      <a class="list-group-item" href="../module/percolation.html#proc-spanning_density_one_sample">spanning_density_one_sample</a>
-      
       <a class="list-group-item" href="../module/percolation.html#proc-spanning_density">spanning_density</a>
-      
-      <a class="list-group-item" href="../module/percolation.html#proc-has_spanning_cluster_one_sample">has_spanning_cluster_one_sample</a>
       
       <a class="list-group-item" href="../module/percolation.html#proc-spanning_probability">spanning_probability</a>
       
@@ -388,8 +382,9 @@
     
 
     
-    
-    
+    <p>A module with procedures for calculating various properties which
+ are interesting when doing numerical percolation experiments.</p>
+    <br>
     
 
     <section class="visible-xs visible-sm hidden-md">
@@ -428,13 +423,7 @@
       
       <a class="list-group-item" href="../module/percolation.html#proc-find_spanning_cluster">find_spanning_cluster</a>
       
-      <a class="list-group-item" href="../module/percolation.html#proc-find_intersection">find_intersection</a>
-      
-      <a class="list-group-item" href="../module/percolation.html#proc-spanning_density_one_sample">spanning_density_one_sample</a>
-      
       <a class="list-group-item" href="../module/percolation.html#proc-spanning_density">spanning_density</a>
-      
-      <a class="list-group-item" href="../module/percolation.html#proc-has_spanning_cluster_one_sample">has_spanning_cluster_one_sample</a>
       
       <a class="list-group-item" href="../module/percolation.html#proc-spanning_probability">spanning_probability</a>
       
@@ -498,7 +487,8 @@
   
   <td>public,</td>
   <td>parameter</td><td>::</td>
-  <td><strong>pc</strong></td><td> =</td><td>0.592746</td><td></td>
+  <td><strong>pc</strong></td><td> =</td><td>0.592746</td><td><p>Known critical probability for a two-dimensional site-percolating
+ system.</p></td>
   
 </tr>
 
@@ -539,7 +529,8 @@ public function <a href='../proc/create_binary_matrix.html'>create_binary_matrix
 
 
 
-<p>C</p>
+<p>Create a random, binary (<code>logical</code>) matrix,
+ which can be used in percolation experiments.</p>
     
     <h4>Arguments</h4>
     
@@ -565,7 +556,7 @@ public function <a href='../proc/create_binary_matrix.html'>create_binary_matrix
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>p</strong></td><td></td>
+  <td><strong>p</strong></td><td><p>Probability for each matrix element to be <code>.true.</code>.</p></td>
   
 </tr>
 
@@ -597,7 +588,9 @@ public function <a href='../proc/create_binary_matrix.html'>create_binary_matrix
   
      <h4>Return Value <small>logical,
   dimension(:,:), allocatable</small></h4>
-  
+  <p>Randomly created matrix, where each element is <code>.true.</code>
+ or <code>.false.</code> if a randomly generated number is smaller
+ or greater than p.</p>
     
 
   </div>
@@ -615,6 +608,15 @@ public function <a href='../proc/find_sizes.html'>find_sizes</a>(labelled_matrix
   <div class="panel-body">
        
     
+
+
+
+
+
+
+
+<p>Count the number of sites belonging to each cluster
+ in the labelled matrix.</p>
     
     <h4>Arguments</h4>
     
@@ -640,7 +642,8 @@ public function <a href='../proc/find_sizes.html'>find_sizes</a>(labelled_matrix
   <td></td>
   
   <td>dimension(:,:)</td><td>::</td>
-  <td><strong>labelled_matrix</strong></td><td></td>
+  <td><strong>labelled_matrix</strong></td><td><p>Integer matrix with labelled clusters, resulting from
+ the Hoshen-Kopelman algorithm.</p></td>
   
 </tr>
 
@@ -655,7 +658,7 @@ public function <a href='../proc/find_sizes.html'>find_sizes</a>(labelled_matrix
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>num_labels</strong></td><td></td>
+  <td><strong>num_labels</strong></td><td><p>The known number of clusters.</p></td>
   
 </tr>
 
@@ -672,7 +675,8 @@ public function <a href='../proc/find_sizes.html'>find_sizes</a>(labelled_matrix
   
      <h4>Return Value <small>integer,
   dimension(:), allocatable</small></h4>
-  
+  <p>Array of cluster sizes. The i'th element is the size of
+ the cluster with label i.</p>
     
 
   </div>
@@ -690,6 +694,15 @@ public function <a href='../proc/find_spanning_cluster.html'>find_spanning_clust
   <div class="panel-body">
        
     
+
+
+
+
+
+
+
+<p>Find the label of the percolating cluster, i.e. the one spanning from
+ one side of the system to the opposing side.</p>
     
     <h4>Arguments</h4>
     
@@ -714,8 +727,8 @@ public function <a href='../proc/find_spanning_cluster.html'>find_spanning_clust
   <td>intent(in),</td>
   <td></td>
   
-  <td>dimension(:,:), allocatable</td><td>::</td>
-  <td><strong>labelled_matrix</strong></td><td></td>
+  <td>dimension(:,:)</td><td>::</td>
+  <td><strong>labelled_matrix</strong></td><td><p>Labelled matrix of clusters.</p></td>
   
 </tr>
 
@@ -730,7 +743,7 @@ public function <a href='../proc/find_spanning_cluster.html'>find_spanning_clust
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>num_labels</strong></td><td></td>
+  <td><strong>num_labels</strong></td><td><p>Known number of clusters.</p></td>
   
 </tr>
 
@@ -747,172 +760,7 @@ public function <a href='../proc/find_spanning_cluster.html'>find_spanning_clust
   
      <h4>Return Value <small>integer
   </small></h4>
-  
-    
-
-  </div>
-  </div>
-
-    
-    
-  <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-find_intersection"></span><h3>
-public function <a href='../proc/find_intersection.html'>find_intersection</a>(array1, array2, num_labels) result(intersect_label)
-    
-    
-	 
-</h3></div>
-  <div class="panel-body">
-       
-    
-    
-    <h4>Arguments</h4>
-    
-      
-      
-<table class="table table-striped varlist">
-<thead><tr><th>Type</th>
-<th>Intent</th><th>Optional</th>
-<th>Attributes</th><th></th><th>Name</th><th></th></thead>
-
-
-
-<tbody>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer,</td>
-  <td>intent(in),</td>
-  <td></td>
-  
-  <td>dimension(:)</td><td>::</td>
-  <td><strong>array1</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer,</td>
-  <td>intent(in),</td>
-  <td></td>
-  
-  <td>dimension(:)</td><td>::</td>
-  <td><strong>array2</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer,</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>num_labels</strong></td><td></td>
-  
-</tr>
-
-</tbody>
-</table>
-
-      
-    
-    
-
-  
-  
-  
-  
-     <h4>Return Value <small>integer
-  </small></h4>
-  
-    
-
-  </div>
-  </div>
-
-    
-    
-  <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-spanning_density_one_sample"></span><h3>
-public function <a href='../proc/spanning_density_one_sample.html'>spanning_density_one_sample</a>(p, L) result(spanning_density)
-    
-    
-	 
-</h3></div>
-  <div class="panel-body">
-       
-    
-    
-    <h4>Arguments</h4>
-    
-      
-      
-<table class="table table-striped varlist">
-<thead><tr><th>Type</th>
-<th>Intent</th><th>Optional</th>
-<th>Attributes</th><th></th><th>Name</th><th></th></thead>
-
-
-
-<tbody>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>real(kind=dp),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>p</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer,</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>L</strong></td><td></td>
-  
-</tr>
-
-</tbody>
-</table>
-
-      
-    
-    
-
-  
-  
-  
-  
-     <h4>Return Value <small>real(kind=dp)
-  </small></h4>
-  
+  <p>Label of the percolating cluster.</p>
     
 
   </div>
@@ -1001,81 +849,6 @@ public function <a href='../proc/spanning_density.html'>spanning_density</a>(p, 
   
   
      <h4>Return Value <small>real(kind=dp)
-  </small></h4>
-  
-    
-
-  </div>
-  </div>
-
-    
-    
-  <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="proc-has_spanning_cluster_one_sample"></span><h3>
-public function <a href='../proc/has_spanning_cluster_one_sample.html'>has_spanning_cluster_one_sample</a>(p, L) result(has_spanning)
-    
-    
-	 
-</h3></div>
-  <div class="panel-body">
-       
-    
-    
-    <h4>Arguments</h4>
-    
-      
-      
-<table class="table table-striped varlist">
-<thead><tr><th>Type</th>
-<th>Intent</th><th>Optional</th>
-<th>Attributes</th><th></th><th>Name</th><th></th></thead>
-
-
-
-<tbody>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>real(kind=dp),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>p</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer,</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>L</strong></td><td></td>
-  
-</tr>
-
-</tbody>
-</table>
-
-      
-    
-    
-
-  
-  
-  
-  
-     <h4>Return Value <small>logical
   </small></h4>
   
     
@@ -1298,6 +1071,16 @@ public subroutine <a href='../proc/label.html'>label</a>(matrix, labelled_matrix
   <div class="panel-body">
        
     
+
+
+
+
+
+
+
+<p>Alternative interface to the Hoshen-Kopelman algorithm
+ from the hk module, which uses a binary matrix created
+ by <a href="../proc/create_binary_matrix.html">create_binary_matrix</a>.</p>
     
     <h4>Arguments</h4>
     
@@ -1322,23 +1105,8 @@ public subroutine <a href='../proc/label.html'>label</a>(matrix, labelled_matrix
   <td>intent(in),</td>
   <td></td>
   
-  <td>dimension(:,:), allocatable</td><td>::</td>
-  <td><strong>matrix</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer(kind=c_int),</td>
-  <td>intent(inout),</td>
-  <td></td>
-  
-  <td>dimension(:,:), allocatable</td><td>::</td>
-  <td><strong>labelled_matrix</strong></td><td></td>
+  <td>dimension(:,:)</td><td>::</td>
+  <td><strong>matrix</strong></td><td><p>Binary matrix where clusters will be identified.</p></td>
   
 </tr>
 
@@ -1349,11 +1117,27 @@ public subroutine <a href='../proc/label.html'>label</a>(matrix, labelled_matrix
 <tr>
   
   <td><span class="anchor" ></span>integer,</td>
-  <td>intent(inout)</td>
+  <td>intent(inout),</td>
+  <td></td>
+  
+  <td>dimension(:,:), allocatable</td><td>::</td>
+  <td><strong>labelled_matrix</strong></td><td><p>Integer matrix which will store the labels of each cluster.
+ Reallocated if necessary.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out)</td>
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>num_labels</strong></td><td></td>
+  <td><strong>num_labels</strong></td><td><p>Overwritten with the total number of disjoint clusters.</p></td>
   
 </tr>
 
@@ -1371,7 +1155,7 @@ public subroutine <a href='../proc/label.html'>label</a>(matrix, labelled_matrix
     
   <div class="panel panel-default">
   <div class="panel-heading codesum"><span class="anchor" id="proc-cluster_number_density"></span><h3>
-public subroutine <a href='../proc/cluster_number_density.html'>cluster_number_density</a>(p, L, num_samples, bin_mids, results)
+public subroutine <a href='../proc/cluster_number_density.html'>cluster_number_density</a>(p, L, num_samples, bin_mids, results, binsize_base)
     
     
 	 
@@ -1379,6 +1163,34 @@ public subroutine <a href='../proc/cluster_number_density.html'>cluster_number_d
   <div class="panel-body">
        
     
+
+
+
+
+
+
+
+<p>Calculate the number density of clusters with different sizes.
+ The cluster number density is defined as
+ \begin{equation}
+      n(s,p) = \sum_{\text{MC-samples}}
+                   \frac{\text{number of clusters with size }s}
+                        {L^2\cdot\text{number of MC-samples}}.
+ \end{equation}
+ Direct calculations will usually give bad results, as there
+ will be very few
+ clusters with large sizes compared to the numbers of clusters
+ with small sizes. This is circumvented by doing logarithmic
+ binning and averaging, i.e.
+ \begin{equation}
+      n\left([s+\Delta s),p\right) = \sum_{\text{MC-samples}}
+                   \frac{\text{number of clusters with size }s
+                         \in[s,s+\Delta s)}
+                        {\Delta s\cdot L^2\cdot\text{number of MC-samples}},
+      \label{eq:nsp}
+ \end{equation}
+ where \(\Delta s\) are logarithmically distributed. After execution,
+ <strong>bin_mids</strong> will contain the centres of the bins.</p>
     
     <h4>Arguments</h4>
     
@@ -1404,7 +1216,7 @@ public subroutine <a href='../proc/cluster_number_density.html'>cluster_number_d
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>p</strong></td><td></td>
+  <td><strong>p</strong></td><td><p>Probability for a given site to allow transport.</p></td>
   
 </tr>
 
@@ -1419,7 +1231,7 @@ public subroutine <a href='../proc/cluster_number_density.html'>cluster_number_d
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>L</strong></td><td></td>
+  <td><strong>L</strong></td><td><p>Percolating systems will be \(L\times L\).</p></td>
   
 </tr>
 
@@ -1434,7 +1246,8 @@ public subroutine <a href='../proc/cluster_number_density.html'>cluster_number_d
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>num_samples</strong></td><td></td>
+  <td><strong>num_samples</strong></td><td><p>Results will be averaged over this number of Monte Carlo-samples.
+ Sampling is parallelised.</p></td>
   
 </tr>
 
@@ -1449,7 +1262,7 @@ public subroutine <a href='../proc/cluster_number_density.html'>cluster_number_d
   <td></td>
   
   <td>dimension(:), allocatable</td><td>::</td>
-  <td><strong>bin_mids</strong></td><td></td>
+  <td><strong>bin_mids</strong></td><td><p>Centres of bins.</p></td>
   
 </tr>
 
@@ -1464,7 +1277,23 @@ public subroutine <a href='../proc/cluster_number_density.html'>cluster_number_d
   <td></td>
   
   <td>dimension(:), allocatable</td><td>::</td>
-  <td><strong>results</strong></td><td></td>
+  <td><strong>results</strong></td><td><p>Cluster number density in \eqref{eq:nsp}.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=dp),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>binsize_base</strong></td><td><p>The edges of the logarithmically distributed bins will be
+ integer powers of this number. Default: 1.5.</p></td>
   
 </tr>
 
