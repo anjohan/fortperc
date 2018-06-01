@@ -19,7 +19,8 @@ add_library(utilities ${CMAKE_CURRENT_SOURCE_DIR}/src/utilities.f90)
 add_library(percolation ${CMAKE_CURRENT_SOURCE_DIR}/src/percolation.f90)
 add_library(hk ${CMAKE_CURRENT_SOURCE_DIR}/src/hk.f90)
 
-add_dependencies(percolation utilities hk)
+target_link_libraries(percolation hk utilities)
+#add_dependencies(percolation utilities hk)
 
 set(mylibraries utilities percolation lapack hk)
 
