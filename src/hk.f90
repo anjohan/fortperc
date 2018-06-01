@@ -2,7 +2,7 @@ module hk
     implicit none
     contains
         function uf_find(x, labels) result(y)
-            integer, value, intent(in) :: x
+            integer, intent(in) :: x
             integer, dimension(:), intent(inout) :: labels
             integer :: y, z, tmp
 
@@ -28,9 +28,9 @@ module hk
             labels(uf_find(x,labels)) = canonical_label
         end function
 
-        function hoshen_kopelman(matrix) result(new_num_clusters)
+        function hoshen_kopelman(matrix) result(num_clusters)
             integer, dimension(:,:) :: matrix
-            integer :: num_clusters, new_num_clusters
+            integer :: num_clusters
             integer :: m, n, i, j, up, left, label
             integer, dimension(:), allocatable :: labels, new_labels
 
@@ -66,7 +66,7 @@ module hk
 
                         ! Only one neighbour
                         else
-                            matrix(i,J) = max(up, left)
+                            matrix(i,j) = max(up, left)
                         end if
                     end if
                 end do
@@ -74,15 +74,15 @@ module hk
 
             allocate(new_labels(m*n/2+1))
             new_labels = 0
-            new_num_clusters = 0
+            num_clusters = 0
 
             do j = 1, n
                 do i = 1, m
                     if(matrix(i,j) > 0) then
                         label = uf_find(matrix(i,j), labels)
                         if(new_labels(label) == 0) then
-                            new_num_clusters = new_num_clusters + 1
-                            new_labels(label) = new_num_clusters
+                            num_clusters = num_clusters + 1
+                            new_labels(label) = num_clusters
                         end if
                         matrix(i,j) = new_labels(label)
                     end if
