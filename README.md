@@ -1,5 +1,7 @@
 # fortperc
 
+See generated documentation [here](https://anjohan.github.io/fortperc/html/).
+
 This library contains various useful functions for doing percolation in Fortran.
 
 [`src/hk.f90`](https://github.com/anjohan/fortperc/blob/master/src/hk.f90) contains a Fortran implementation of the Hoshen-Kopelman algorithm, inspired by Tobin Fricke's C implementation at https://gist.github.com/tobin/909424.
