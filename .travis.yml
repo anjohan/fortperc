@@ -1,10 +1,19 @@
-language: C
+language: generic
 
 addons:
     apt:
         packages:
         - gfortran
         - cmake
+        - python-pip
+        - graphviz
+
+before_install:
+    - pip install --user ford
 
 script:
-    - mkdir build && cd build && cmake .. && make -j
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make -j
+    - ford fortperc.md
