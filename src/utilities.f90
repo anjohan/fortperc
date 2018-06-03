@@ -1,10 +1,15 @@
 module utilities
+    !! Useful procedures when doing percolation.
     implicit none
     integer, parameter :: dp = kind(1.0d0)
+        !! Kind used for all **real** variables.
     contains
         function stringfromint(x)
+            !! Make a string of "correct" length form an integer.
             character(len=:), allocatable :: stringfromint
+                !! String containing the given integer, without spaces.
             integer, intent(in) :: x
+                !! Integer to be converted.
             integer :: numdigits
 
             numdigits = int(log10(real(x))) + 1
