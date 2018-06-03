@@ -20,8 +20,10 @@ module percolation
                 !! Randomly created matrix, where each element is `.true.`
                 !! or `.false.` if a randomly generated number is smaller
                 !! or greater than p.
+
             real(kind=dp), intent(in) :: p
                 !! Probability for each matrix element to be `.true.`.
+
             integer, intent(in) :: L
 
             real(kind=dp), dimension(:,:), allocatable :: p_matrix
@@ -37,13 +39,17 @@ module percolation
             !! Alternative interface to the Hoshen-Kopelman algorithm
             !! from the hk module, which uses a binary matrix created
             !! by [[create_binary_matrix]].
+
             logical, dimension(:,:), intent(in) :: matrix
                 !! Binary matrix where clusters will be identified.
-            integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
+
+            integer, dimension(:,:), allocatable, intent(out) :: labelled_matrix
                 !! Integer matrix which will store the labels of each cluster.
                 !! Reallocated if necessary.
+
             integer, intent(out) :: num_labels
                 !! Overwritten with the total number of disjoint clusters.
+
             integer :: L
 
             L = size(matrix,1)
@@ -65,14 +71,18 @@ module percolation
         function find_sizes(labelled_matrix, num_labels) result(sizes)
             !! Count the number of sites belonging to each cluster
             !! in the labelled matrix.
+
             integer, dimension(:), allocatable :: sizes
                 !! Array of cluster sizes. The i'th element is the size of
                 !! the cluster with label i.
+
             integer, dimension(:,:), intent(in) :: labelled_matrix
                 !! Integer matrix with labelled clusters, resulting from
                 !! the Hoshen-Kopelman algorithm.
+
             integer, intent(in) :: num_labels
                 !! The known number of clusters.
+
             integer :: L,i,j
 
             L = size(labelled_matrix,1)
@@ -115,17 +125,22 @@ module percolation
 
             integer, intent(in) :: L
                 !! Percolating systems will be \\(L\times L\\).
+
             integer, intent(in) :: num_samples
                 !! Results will be averaged over this number of Monte Carlo-samples.
                 !! Sampling is parallelised.
+
             real(kind=dp), intent(in) :: p
                 !! Probability for a given site to allow transport.
+
             real(kind=dp), intent(in), optional :: binsize_base
                 !! The edges of the logarithmically distributed bins will be
                 !! integer powers of this number. Default: 1.5.
-            real(kind=dp), dimension(:), intent(inout), allocatable :: bin_mids
+
+            real(kind=dp), dimension(:), intent(out), allocatable :: bin_mids
                 !! Centres of bins.
-            real(kind=dp), dimension(:), intent(inout), allocatable :: results
+
+            real(kind=dp), dimension(:), intent(out), allocatable :: results
                 !! Cluster number density in \eqref{eq:nsp}.
 
             integer :: num_bins, i, j, num_labels, sizeindex, spanning_label
@@ -182,10 +197,13 @@ module percolation
 
             integer :: spanning_label
                 !! Label of the percolating cluster.
+
             integer, dimension(:,:), intent(in) :: labelled_matrix
                 !! Labelled matrix of clusters from [[hoshen_kopelman]]/[[label]].
+
             integer, intent(in) :: num_labels
                 !! Known number of clusters.
+
             integer :: L
 
             L = size(labelled_matrix,1)
@@ -224,14 +242,19 @@ module percolation
             !! Density of the spanning/percolating cluster, i.e.
             !! the number of sites on the percolating cluster divided by \\(L^2\\).
             !! Averaged over **num_samples** Monte Carlo samples (with OpenMP).
+
             real(kind=dp) :: spanning_density
                 !! The number of sites on the spanning cluster divided by \\(L^2\\).
+
             real(kind=dp), intent(in) :: p
                 !! The probability for a site to allow transport.
+
             integer, intent(in) :: L
                 !! The size of the system.
+
             integer, intent(in) :: num_samples
                 !! The number of Monte Carlo samples.
+
 
             integer :: i
             real(kind=dp), dimension(:), allocatable :: results
@@ -268,16 +291,21 @@ module percolation
         function spanning_probability(p, L, num_samples)
             !! Calculate the probability of having a spanning/percolating cluster, given
             !! a system size **L** and probability for a site to have transport **p**.
+
             real(kind=dp) :: spanning_probability
                 !! The probability of having a percolating cluster, calculated as the number
                 !! of times a percolating cluster is found, divided by the number of attempts
                 !! (**num_samples**).
+
             real(kind=dp), intent(in) :: p
                 !! Probability for a site to allow transport.
+
             integer, intent(in) :: L
                 !! Size of the system.
+
             integer, intent(in) :: num_samples
                 !! Number of Monte Carlo samples.
+
 
             integer :: i
             logical, dimension(:), allocatable :: results
@@ -296,20 +324,26 @@ module percolation
         function spanning_probability_inverse(x, L, num_samples, tolerance) result(p_x)
             !! Find the inverse of [[spanning_probability]] by use
             !! of the bisection method.
+
             real(kind=dp), intent(in) :: x
                 !! The value of [[spanning_probability]] for which the inverse
                 !! is calculated.
+
             real(kind=dp), intent(in) :: tolerance
                 !! Tolerance of approximation. The return value is within
                 !! **tolerance**/2 of the correct (but numerical) value.
+
             integer, intent(in) :: L
                 !! Size of the system.
+
             integer, intent(in) :: num_samples
                 !! Number of Monte Carlo samples to use when evaluating [[spanning_probability]].
+
             real(kind=dp) :: p_x
                 !! The inverse of [[spanning_probability]]. If [[spanning_probability]] is
                 !! denoted \\(\Pi(p,L)\\), this function returns \\(p\\) such
                 !! that \\(\Pi(p,L)=x\\).
+
 
             real(kind=dp) :: lower, upper, lowerPI, upperPI, mid, midPI
 
