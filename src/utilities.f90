@@ -5,11 +5,11 @@ module utilities
         !! Kind used for all **real** variables.
     contains
         function stringfromint(x)
-            !! Make a string of "correct" length from an integer.
+            !! Make a string of "correct" length from a positive integer.
             character(len=:), allocatable :: stringfromint
                 !! String containing the given integer, without spaces.
             integer, intent(in) :: x
-                !! Integer to be converted.
+                !! Positive integer to be converted.
             integer :: numdigits
 
             numdigits = int(log10(real(x))) + 1
