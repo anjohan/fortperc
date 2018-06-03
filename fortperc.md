@@ -9,7 +9,7 @@ graph: true
 
 [![Build Status](https://travis-ci.org/anjohan/fortperc.svg?branch=master)](https://travis-ci.org/anjohan/fortperc)
 
-## Introduction TEST
+## Introduction
 This library consists of two main modules:
 
 * `hk`, which contains an implementation of the Hoshen-Kopelman algorithm.
