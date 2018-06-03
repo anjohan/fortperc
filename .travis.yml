@@ -18,6 +18,8 @@ script:
     - make -j
     - cd ..
     - ford fortperc.md
+    - mv docs/* .
+    - rm -rf docs
 
 deploy:
     provider: pages
