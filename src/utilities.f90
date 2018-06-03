@@ -5,7 +5,7 @@ module utilities
         !! Kind used for all **real** variables.
     contains
         function stringfromint(x)
-            !! Make a string of "correct" length form an integer.
+            !! Make a string of "correct" length from an integer.
             character(len=:), allocatable :: stringfromint
                 !! String containing the given integer, without spaces.
             integer, intent(in) :: x
