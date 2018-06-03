@@ -37,8 +37,14 @@ module utilities
         end function
 
         subroutine linfit(x, y, slope, const)
+            !! Compute a linear fit for the given data, return
+            !! the slope and the constant term.
             real(kind=dp), dimension(:), intent(in) :: x, y
-            real(kind=dp), intent(in out) :: slope, const
+                !! Values to be fitted.
+            real(kind=dp), intent(inout) :: slope
+                !! \\(a\\) in \\(y=ax+b\\).
+            real(kind=dp), intent(inout) :: const
+                !! \\(b\\) in \\(y=ax+b\\).
             real(kind=dp), dimension(:,:), allocatable :: A
             real(kind=dp), dimension(:), allocatable :: b, work
             integer :: lda, ldb, lwork, info, m
