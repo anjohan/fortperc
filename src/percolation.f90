@@ -306,8 +306,9 @@ module percolation
             integer, intent(in) :: num_samples
                 !! Number of Monte Carlo samples to use when evaluating [[spanning_probability]].
             real(kind=dp) :: p_x
-                !! The inverse of [[spanning_probability]] such that
-                !! [[spanning_probability]] applied to [[spanning_probability_inverse]](**x**, ...)) returns **x**.
+                !! The inverse of [[spanning_probability]]. If [[spanning_probability]] is
+                !! denoted \\(\Pi(p,L)\\), this function returns \\(p\\) such
+                !! that \\(\Pi(p,L)=x\\).
 
 
             real(kind=dp) :: lower, upper, lowerPI, upperPI, mid, midPI
