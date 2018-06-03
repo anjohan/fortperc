@@ -1,6 +1,6 @@
 project: fortperc
 project_dir: ./src
-output_dir: ./docs
+output_dir: ./
 author: Anders Johansson
 project_github: https://github.com/anjohan/fortperc
 summary: fortperc - A percolation library in modern Fortran
