@@ -2,6 +2,7 @@ project: fortperc
 project_dir: ./src
 output_dir: ./docs
 author: Anders Johansson
+author_description: Computational Physics M.Sc. student at UiO.
 project_github: https://github.com/anjohan/fortperc
 summary: fortperc - A percolation library in modern Fortran
 github: https://github.com/anjohan
