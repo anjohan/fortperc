@@ -293,9 +293,22 @@ module percolation
         end function
 
         function spanning_probability_inverse(x, L, num_samples, tolerance) result(p_x)
-            real(kind=dp), intent(in) :: x, tolerance
+            !! Find the inverse of [[spanning_probability]] by use
+            !! of the bisection method.
+            real(kind=dp), intent(in) :: x
+                !! The value of [[spanning_probability]] for which the inverse
+                !! is calculated.
+            real(kind=dp), intent(in) :: tolerance
+                !! Tolerance of approximation. The return value is within
+                !! **tolerance**/2 of the correct (but numerical) value.
+            integer, intent(in) :: L
+                !! Size of the system.
+            integer, intent(in) :: num_samples
+                !! Number of Monte Carlo samples to use when evaluating [[spanning_probability]].
             real(kind=dp) :: p_x
-            integer, intent(in) :: L, num_samples
+                !! The inverse of [[spanning_probability]] such that
+                !! [[spanning_probability]]([[spanning_probability_inverse]](**x**, ...))=**x**.
+
             real(kind=dp) :: lower, upper, lowerPI, upperPI, mid, midPI
 
             !/invPIstart/!
