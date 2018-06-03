@@ -16,4 +16,5 @@ script:
     - cd build
     - cmake ..
     - make -j
+    - cd ..
     - ford fortperc.md
