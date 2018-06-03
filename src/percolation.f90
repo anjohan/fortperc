@@ -5,7 +5,8 @@ module percolation
     use hk
     implicit none
 
-    private :: has_spanning_cluster_one_sample, spanning_density_one_sample
+    private :: has_spanning_cluster_one_sample, spanning_density_one_sample, &
+               label_recursively, growcluster
 
     real(kind=dp), parameter :: pc = 0.592746
         !! Known critical probability for a two-dimensional site-percolating
@@ -310,7 +311,6 @@ module percolation
                 !! denoted \\(\Pi(p,L)\\), this function returns \\(p\\) such
                 !! that \\(\Pi(p,L)=x\\).
 
-
             real(kind=dp) :: lower, upper, lowerPI, upperPI, mid, midPI
 
             !/invPIstart/!
@@ -336,7 +336,7 @@ module percolation
         end function
 
         !/labelsubroutinestart/!
-        subroutine label_stackoverflow(matrix, labelled_matrix, num_labels)
+        subroutine label_recursively(matrix, labelled_matrix, num_labels)
             logical, dimension(:,:), allocatable, intent(in) :: matrix
             integer, dimension(:,:), allocatable, intent(inout) :: labelled_matrix
             integer, intent(inout) :: num_labels
