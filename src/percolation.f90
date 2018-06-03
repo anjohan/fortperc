@@ -182,7 +182,7 @@ module percolation
             integer :: spanning_label
                 !! Label of the percolating cluster.
             integer, dimension(:,:), intent(in) :: labelled_matrix
-                !! Labelled matrix of clusters.
+                !! Labelled matrix of clusters from [[hoshen_kopelman]]/[[label]].
             integer, intent(in) :: num_labels
                 !! Known number of clusters.
             integer :: L
@@ -220,9 +220,17 @@ module percolation
         end function
 
         function spanning_density(p, L, num_samples)
+            !! Density of the spanning/percolating cluster, i.e.
+            !! the number of sites on the percolating cluster divided by \\(L^2\\).
+            !! Averaged over **num_samples** Monte Carlo samples (with OpenMP).
             real(kind=dp) :: spanning_density
+                !! The number of sites on the spanning cluster divided by \\(L^2\\).
             real(kind=dp), intent(in) :: p
-            integer, intent(in) :: L, num_samples
+                !! The probability for a site to allow transport.
+            integer, intent(in) :: L
+                !! The size of the system.
+            integer, intent(in) :: num_samples
+                !! The number of Monte Carlo samples.
 
             integer :: i
             real(kind=dp), dimension(:), allocatable :: results
