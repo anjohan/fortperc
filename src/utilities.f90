@@ -79,9 +79,14 @@ module utilities
         end subroutine
 
         function find_intersection(array1, array2, num_labels) result(intersect_label)
+            !! Find the common element in two arrays, given a total of
+            !! **num_labels** unique elements. Used by [[find_spanning_cluster]].
             integer, dimension(:), intent(in) :: array1, array2
-            integer :: intersect_label
+                !! Array to analyse.
             integer, intent(in) :: num_labels
+                !! The known number of unique non-zero elements.
+            integer :: intersect_label
+                !! The first non-zero common element.
             integer :: L, i
             logical, dimension(:), allocatable :: label_found
 
