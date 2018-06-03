@@ -6,43 +6,6 @@ module hk
     implicit none
     contains
 
-        function uf_find(x, labels) result(y)
-            !! Union-Find find algorithm:
-            !! Find the lowest corresponding label.
-            !! Relabelling is done when necessary.
-            integer, intent(in) :: x
-                !! Label for which to find the lowest corresponding label.
-            integer, dimension(:), intent(inout) :: labels
-                !! List of labels. **labels(i)** points to the lowest
-                !! corresponding label of label **i**.
-            integer :: y, z, tmp
-
-            y = x
-            do while(labels(y) /= y)
-                y = labels(y)
-            end do
-
-            tmp = x
-            do while(labels(tmp) /= tmp)
-                z = labels(tmp)
-                labels(tmp) = y
-                tmp = z
-            end do
-        end function
-
-        function uf_union(x, y, labels) result(canonical_label)
-            !! Union-Find union algorithm:
-            !! Merge two labels, return the result.
-            integer, intent(in) :: x, y
-                !! Labels to merge.
-            integer, dimension(:), intent(inout) :: labels
-                !! List of labels.
-            integer :: canonical_label
-
-            canonical_label = uf_find(y,labels)
-            labels(uf_find(x,labels)) = canonical_label
-        end function
-
         function hoshen_kopelman(matrix) result(num_clusters)
             !! Hoshen-Kopelman algorithm for labelling clusters on
             !! a binary matrix.
@@ -112,5 +75,42 @@ module hk
                     end if
                 end do
             end do
+        end function
+
+        function uf_find(x, labels) result(y)
+            !! Union-Find find algorithm:
+            !! Find the lowest corresponding label.
+            !! Relabelling is done when necessary.
+            integer, intent(in) :: x
+                !! Label for which to find the lowest corresponding label.
+            integer, dimension(:), intent(inout) :: labels
+                !! List of labels. **labels(i)** points to the lowest
+                !! corresponding label of label **i**.
+            integer :: y, z, tmp
+
+            y = x
+            do while(labels(y) /= y)
+                y = labels(y)
+            end do
+
+            tmp = x
+            do while(labels(tmp) /= tmp)
+                z = labels(tmp)
+                labels(tmp) = y
+                tmp = z
+            end do
+        end function
+
+        function uf_union(x, y, labels) result(canonical_label)
+            !! Union-Find union algorithm:
+            !! Merge two labels, return the result.
+            integer, intent(in) :: x, y
+                !! Labels to merge.
+            integer, dimension(:), intent(inout) :: labels
+                !! List of labels.
+            integer :: canonical_label
+
+            canonical_label = uf_find(y,labels)
+            labels(uf_find(x,labels)) = canonical_label
         end function
 end module hk
