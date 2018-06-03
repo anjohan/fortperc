@@ -265,9 +265,18 @@ module percolation
         end function
 
         function spanning_probability(p, L, num_samples)
+            !! Calculate the probability of having a spanning/percolating cluster, given
+            !! a system size **L** and probability for a site to have transport **p**.
             real(kind=dp) :: spanning_probability
+                !! The probability of having a percolating cluster, calculated as the number
+                !! of times a percolating cluster is found, divided by the number of attempts
+                !! (**num_samples**).
             real(kind=dp), intent(in) :: p
-            integer, intent(in) :: L, num_samples
+                !! Probability for a site to allow transport.
+            integer, intent(in) :: L
+                !! Size of the system.
+            integer, intent(in) :: num_samples
+                !! Number of Monte Carlo samples.
 
             integer :: i
             logical, dimension(:), allocatable :: results
