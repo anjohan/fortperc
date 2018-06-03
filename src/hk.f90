@@ -1,4 +1,8 @@
 module hk
+    !! A module containing a Fortran implementation of the
+    !! Hoshen-Kopelman algorithm, as well as the necessary
+    !! union-find procedures.
+
     implicit none
     contains
 
@@ -7,7 +11,10 @@ module hk
             !! Find the lowest corresponding label.
             !! Relabelling is done when necessary.
             integer, intent(in) :: x
+                !! Label for which to find the lowest corresponding label.
             integer, dimension(:), intent(inout) :: labels
+                !! List of labels. **labels(i)** points to the lowest
+                !! corresponding label of label **i**.
             integer :: y, z, tmp
 
             y = x
@@ -27,7 +34,9 @@ module hk
             !! Union-Find union algorithm:
             !! Merge two labels, return the result.
             integer, intent(in) :: x, y
+                !! Labels to merge.
             integer, dimension(:), intent(inout) :: labels
+                !! List of labels.
             integer :: canonical_label
 
             canonical_label = uf_find(y,labels)
