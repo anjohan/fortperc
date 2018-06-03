@@ -18,9 +18,18 @@ module utilities
         end function
 
         function linspace(a,b,N)
+            !! Create an array of **N** linearly spaced *values* (not intervals)
+            !! from **a** to **b**.
+            !! Similar to [`numpy.linspace(a, b, N)`]
+            !! (https://docs.scipy.org/doc/numpy/reference/generated/numpy.linspace.html).
             integer, intent(in) :: N
-            real(kind=dp), intent(in) :: a,b
+                !! Number of values (not intervals).
+            real(kind=dp), intent(in) :: a
+                !! Lower endpoint.
+            real(kind=dp), intent(in) :: b
+                !! Upper endpoint.
             real(kind=dp), dimension(:), allocatable :: linspace
+                !! Array of linearly spaced values.
             real(kind=dp) :: dx
             integer :: i
 
