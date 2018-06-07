@@ -196,7 +196,7 @@ module percolation
             !! one side of the system to the opposing side.
 
             integer :: spanning_label
-                !! Label of the percolating cluster.
+                !! Label of the percolating cluster. -1 if no percolating cluster is found.
 
             integer, dimension(:,:), intent(in) :: labelled_matrix
                 !! Labelled matrix of clusters from [[hoshen_kopelman]]/[[label]].
