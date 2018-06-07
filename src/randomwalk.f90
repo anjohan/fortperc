@@ -5,50 +5,6 @@ module randomwalk
     private :: find_random_point
     contains
 
-        subroutine find_random_point(matrix, i, j)
-            !! Find a random position on **matrix** such that
-            !! **matrix(i, j)** is `.true.`.
-
-            logical, dimension(:,:), intent(in) :: matrix
-                !! Matrix whose `.true.` values are allowed positions for the
-                !! random walker.
-
-            integer, intent(out) :: i, j
-                !! Returned random point on **matrix**.
-
-            integer :: L
-            real(kind=dp) :: x0_real, y0_real
-
-            L = size(matrix, 1)
-
-            ! Find random starting point.
-            do
-                call random_number(x0_real)
-                call random_number(y0_real)
-
-                x0_real = L*x0_real + 1
-                y0_real = L*y0_real + 1
-
-                i = int(x0_real)
-                j = int(y0_real)
-
-                if(matrix(i,j)) then
-                    return
-                end if
-            end do
-        end subroutine
-
-        subroutine periodic_wraparound(x, L)
-            integer, intent(inout) :: x
-            integer, intent(in) :: L
-
-            if(x == 0) then
-                x = L
-            else if(x == L+1) then
-                x = 1
-            end if
-        end subroutine
-
         function one_random_walker(matrix, num_steps) result(displacement)
             !! Let one random walker do **num_steps** jumps on the `.true.`
             !! values of **matrix**. The initial position is randomly selected.
