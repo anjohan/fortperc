@@ -17,9 +17,11 @@ module randomwalk
                 !! Number of steps for the random walker to take.
 
             integer, dimension(:,:), allocatable :: displacement
-                !! Array of displacements, which has dimension \\(2\times (L+1)\\),
-                !! and should logically have `dimension(2,0:L)`, such that
+                !! Array of displacements, which has dimension
+                !! 2 \\(\times\\) (**num_steps**+1),
+                !! and should logically have `dimension(2,0:num_steps)`, such that
                 !! the i'th column contains the displacement after i steps.
+                !! Averaged over all systems and all walkers.
 
             integer :: x0, y0, x, y, x_new, y_new, dx, dy, L, i, direction
             real(kind=dp) :: real_direction
@@ -30,7 +32,7 @@ module randomwalk
 
 
             L = size(matrix, 1)
-            allocate(displacement(2,0:L))
+            allocate(displacement(2,0:num_steps))
 
             displacement(:,0) = 0
 
@@ -76,8 +78,9 @@ module randomwalk
                 !! The number of steps which the random walkers take.
 
             real, dimension(:,:), allocatable :: displacement
-                !! Array of displacements, which has dimension \\(2\times (L+1)\\),
-                !! and should logically have `dimension(2,0:L)`, such that
+                !! Array of displacements, which has dimension
+                !! 2 \\(\times\\) (**num_steps**+1),
+                !! and should logically have `dimension(2,0:num_steps)`, such that
                 !! the i'th column contains the displacement after i steps.
                 !! Averaged over all systems and all walkers.
 
@@ -88,7 +91,7 @@ module randomwalk
             integer :: i, j, num_spanning_clusters, num_clusters, spanning_cluster_label
 
             allocate(spanning_cluster(L,L))
-            allocate(displacement(2,0:L))
+            allocate(displacement(2,0:num_steps))
             displacement(:,:) = 0
 
             num_spanning_clusters = 0
