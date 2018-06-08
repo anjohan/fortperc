@@ -18,7 +18,7 @@ module randomwalk
 
             integer, dimension(:,:), allocatable :: displacement
                 !! Array of displacements, which has dimension
-                !! 2 \\(\times\\) (**num_steps**+1),
+                !! 2 \\(\times\\) (**num_steps** + 1),
                 !! and should logically have `dimension(2,0:num_steps)`, such that
                 !! the i'th column contains the displacement after i steps.
                 !! Averaged over all systems and all walkers.
@@ -79,7 +79,7 @@ module randomwalk
 
             real, dimension(:,:), allocatable :: displacement
                 !! Array of displacements, which has dimension
-                !! 2 \\(\times\\) (**num_steps**+1),
+                !! 2 \\(\times\\) (**num_steps** + 1),
                 !! and should logically have `dimension(2,0:num_steps)`, such that
                 !! the i'th column contains the displacement after i steps.
                 !! Averaged over all systems and all walkers.
