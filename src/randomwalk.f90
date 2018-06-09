@@ -29,9 +29,6 @@ module randomwalk
             ! North - East - South - West
             integer, dimension(4) :: dxs = [0, 1, 0, -1]
             integer, dimension(4) :: dys = [1, 0, -1, 0]
-            integer, dimension(:), allocatable :: hist
-            hist = [0,0,0,0]
-
 
             L = size(matrix, 1)
             allocate(displacement(2,0:num_steps))
@@ -43,11 +40,9 @@ module randomwalk
             x = x0
             y = y0
 
-
             do i = 1, num_steps
                 call random_number(real_direction)
                 direction = int(4*real_direction + 1)
-                hist(direction) = hist(direction) + 1
 
                 dx = dxs(direction)
                 dy = dys(direction)
@@ -65,7 +60,6 @@ module randomwalk
                 else
                     displacement(:,i) = displacement(:,i-1)
                 end if
-
 
             end do
         end function
@@ -119,8 +113,6 @@ module randomwalk
                 !$omp parallel do private(tmp_displacement) reduction(+:displacement)
                 do i = 1, num_walkers
                     tmp_displacement = one_random_walker(spanning_cluster, num_steps)
-                    !write(*,fmt="(*(f0.1,3x,f0.1,/))") tmp_displacement
-                    !write(*,fmt="(*(f0.1,3x,f0.1,/))") tmp_displacement**2
                     displacement(:) = displacement(:) + sum(tmp_displacement(:,:)**2,dim=1)
                 end do
                 !$omp end parallel do
