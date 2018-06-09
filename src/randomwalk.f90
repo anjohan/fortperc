@@ -16,7 +16,7 @@ module randomwalk
             integer :: num_steps
                 !! Number of steps for the random walker to take.
 
-            integer, dimension(:,:), allocatable :: displacement
+            real(kind=dp), dimension(:,:), allocatable :: displacement
                 !! Array of displacements, which has dimension
                 !! 2 \\(\times\\) (**num_steps** + 1),
                 !! and should logically have `dimension(2,0:num_steps)`, such that
@@ -29,21 +29,25 @@ module randomwalk
             ! North - East - South - West
             integer, dimension(4) :: dxs = [0, 1, 0, -1]
             integer, dimension(4) :: dys = [1, 0, -1, 0]
+            integer, dimension(:), allocatable :: hist
+            hist = [0,0,0,0]
 
 
             L = size(matrix, 1)
             allocate(displacement(2,0:num_steps))
 
-            displacement(:,0) = 0
+            displacement(:,:) = 0
 
             call find_random_point(matrix, x0, y0)
 
             x = x0
             y = y0
 
+
             do i = 1, num_steps
                 call random_number(real_direction)
                 direction = int(4*real_direction + 1)
+                hist(direction) = hist(direction) + 1
 
                 dx = dxs(direction)
                 dy = dys(direction)
@@ -58,7 +62,11 @@ module randomwalk
                     x = x_new
                     y = y_new
                     displacement(:,i) = displacement(:,i-1) + [dx, dy]
+                else
+                    displacement(:,i) = displacement(:,i-1)
                 end if
+
+
             end do
         end function
 
@@ -77,22 +85,23 @@ module randomwalk
             integer, intent(in) ::  num_steps
                 !! The number of steps which the random walkers take.
 
-            real, dimension(:,:), allocatable :: displacement
-                !! Array of displacements, which has dimension
-                !! 2 \\(\times\\) (**num_steps** + 1),
-                !! and should logically have `dimension(2,0:num_steps)`, such that
-                !! the i'th column contains the displacement after i steps.
+            real(kind=dp), dimension(:), allocatable :: displacement
+                !! Array of squared displacements, which has dimension
+                !! (**num_steps** + 1),
+                !! and should logically have `dimension(0:num_steps)`, such that
+                !! the i'th element contains the displacement after i steps.
                 !! Averaged over all systems and all walkers.
 
 
             logical, dimension(:,:), allocatable :: binary_matrix, spanning_cluster
-            integer, dimension(:,:), allocatable :: label_matrix, tmp_displacement
+            integer, dimension(:,:), allocatable :: label_matrix
+            real(kind=dp), dimension(:,:), allocatable :: tmp_displacement
 
-            integer :: i, j, num_spanning_clusters, num_clusters, spanning_cluster_label
+            integer :: i, num_spanning_clusters, num_clusters, spanning_cluster_label
 
             allocate(spanning_cluster(L,L))
-            allocate(displacement(2,0:num_steps))
-            displacement(:,:) = 0
+            allocate(displacement(0:num_steps))
+            displacement(:) = 0
 
             num_spanning_clusters = 0
             do while(num_spanning_clusters < num_systems)
@@ -100,18 +109,23 @@ module randomwalk
                 call label(binary_matrix, label_matrix, num_clusters)
                 spanning_cluster_label = find_spanning_cluster(label_matrix, num_clusters)
 
-                if(spanning_cluster_label < 0) then
+                if(spanning_cluster_label < 1) then
                     cycle
                 end if
                 num_spanning_clusters = num_spanning_clusters + 1
 
                 spanning_cluster(:,:) = label_matrix == spanning_cluster_label
 
+                !$omp parallel do private(tmp_displacement) reduction(+:displacement)
                 do i = 1, num_walkers
                     tmp_displacement = one_random_walker(spanning_cluster, num_steps)
-                    displacement(:,:) = displacement(:,:) + tmp_displacement(:,:)
+                    !write(*,fmt="(*(f0.1,3x,f0.1,/))") tmp_displacement
+                    !write(*,fmt="(*(f0.1,3x,f0.1,/))") tmp_displacement**2
+                    displacement(:) = displacement(:) + sum(tmp_displacement(:,:)**2,dim=1)
                 end do
+                !$omp end parallel do
             end do
+            displacement(:) = displacement(:)/(num_walkers*num_systems)
 
         end function
 end module randomwalk

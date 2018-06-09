@@ -149,9 +149,13 @@ module utilities
             integer, intent(in) :: L
 
             if(x == 0) then
+                !write(*,*) "before:", x
                 x = L
+                !write(*,*) "after:", x
             else if(x == L+1) then
+                !write(*,*) "before:", x
                 x = 1
+                !write(*,*) "after:", x
             end if
         end subroutine
 end module
