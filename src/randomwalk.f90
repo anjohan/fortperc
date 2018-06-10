@@ -93,7 +93,6 @@ module randomwalk
 
             integer :: i, num_spanning_clusters, num_clusters, spanning_cluster_label
 
-            allocate(spanning_cluster(L,L))
             allocate(displacement(0:num_steps))
             displacement(:) = 0
 
@@ -108,7 +107,10 @@ module randomwalk
                 end if
                 num_spanning_clusters = num_spanning_clusters + 1
 
-                spanning_cluster(:,:) = label_matrix == spanning_cluster_label
+                spanning_cluster = mark_percolating_with_periodic( &
+                                        label_matrix, spanning_cluster_label, &
+                                        num_clusters)
+
 
                 !$omp parallel do private(tmp_displacement) reduction(+:displacement)
                 do i = 1, num_walkers

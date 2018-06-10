@@ -158,4 +158,62 @@ module utilities
                 !write(*,*) "after:", x
             end if
         end subroutine
+
+        function mark_percolating_with_periodic(label_matrix, &
+                                                percolating_label, &
+                                                num_clusters) &
+                                                result(matrix)
+            !! Return a `logical` matrix where the `.true.` values are the sites
+            !! belonging to the percolating cluster, when periodic boundary
+            !! conditions are considered.
+
+            integer, dimension(:,:), intent(in) :: label_matrix
+                !! Labelled matrix from [[label]] or [[hoshen_kopelman]].
+            integer, intent(in) :: percolating_label
+                !! Known label of the percolating cluster.
+            integer, intent(in) :: num_clusters
+                !! The known number of clusters.
+            logical, dimension(:,:), allocatable :: matrix
+                !! Matrix where the `.true.` values are the sites belonging to
+                !! the percolating cluster with periodic boundary conditions.
+
+            integer :: L, i, j
+            logical, dimension(:), allocatable :: connected_to_percolating
+
+            L = size(label_matrix, 1)
+
+            allocate(matrix(L,L))
+            allocate(connected_to_percolating(0:num_clusters))
+
+            connected_to_percolating(:) = .false.
+            connected_to_percolating(percolating_label) = .true.
+
+            do i = 1, L
+                if(label_matrix(i,1) == percolating_label) then
+                    connected_to_percolating(label_matrix(i, L)) = .true.
+                end if
+
+                if(label_matrix(i,L) == percolating_label) then
+                    connected_to_percolating(label_matrix(i, 1)) = .true.
+                end if
+
+                if(label_matrix(1,i) == percolating_label) then
+                    connected_to_percolating(label_matrix(L, i)) = .true.
+                end if
+
+                if(label_matrix(L, i) == percolating_label) then
+                    connected_to_percolating(label_matrix(1, i)) = .true.
+                end if
+            end do
+
+            connected_to_percolating(0) = .false.
+
+            !$omp parallel do
+            do j = 1, L
+                do i = 1, L
+                    matrix(i,j) = connected_to_percolating(label_matrix(i,j))
+                end do
+            end do
+            !$omp end parallel do
+        end function
 end module
