@@ -8,7 +8,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(generalflags "-Wall -Wextra")
-set(speedflags "-Ofast -fopenmp -fopt-info")
+set(speedflags "-Ofast -fopenmp")
 set(debugflags "-O0 -g -fcheck=all")
 
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${generalflags}")
