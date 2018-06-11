@@ -123,7 +123,7 @@ module randomwalk
 
         end function
 
-        function probability_distribution(p, L, num_steps, num_walkers, num_systems, num_hists, num_bins) &
+        function probability_distribution(p, L, num_steps, num_walkers, num_systems, num_hists) &
                  result(result_hist)
             !! Start **num_walkers** on the percolating cluster of each of **num_systems**
             !! systems, and compute **num_hists** histograms of the distribution
@@ -141,8 +141,6 @@ module randomwalk
                 !! The number of steps which the random walkers take.
             integer, intent(in) :: num_hists
                 !! The number of histograms to be returned.
-            integer, intent(in) :: num_bins
-                !! The number of bins in the returned histograms.
 
             real(kind=dp), dimension(:,:), allocatable :: result_hist
                 !! Array of histograms. The first row contains the centres of the
