@@ -1,14 +1,6 @@
 language: generic
 sudo: required
 
-addons:
-    apt:
-        packages:
-        - gfortran-8
-        - cmake
-        - python-pip
-        - graphviz
-
 before_install:
     - sudo apt-add-repository -y universe
     - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
