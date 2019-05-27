@@ -1,0 +1,25 @@
+language: generic
+sudo: required
+dist: xenial
+
+before_install:
+    - sudo apt-add-repository -y universe
+    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+    - sudo apt update -y
+    - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install gfortran-8 liblapack-dev cmake python-pip graphviz
+    - pip install --user ford
+
+script:
+    - mkdir build
+    - cd build
+    - FC=gfortran-8 cmake ..
+    - make -j
+    - cd ..
+    - ford fortperc.md
+    - rsync -av --exclude src docs/ .
+    - rm -rf docs
+
+deploy:
+    provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
